@@ -27,8 +27,6 @@ namespace wobble.Resources.layout
             SetContentView(Resource.Layout.activity_movement);
             frame = FindViewById<FrameLayout>(Resource.Id.flMainFrame);
             Log.Debug("MovementActivity", "OnCreate" + frame.Width);
-
-            // Create your application here
         }
 
 

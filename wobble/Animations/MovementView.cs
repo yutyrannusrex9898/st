@@ -10,12 +10,9 @@ namespace wobble.Animations
     {
         int width;
         int height;
-        private Paint bgPaint;
         private Sprite sprite;
         private Canvas canvas;
-
         private Thread thread;
-
 
         public MovementView(Context context, int width, int height) : base(context)
         {

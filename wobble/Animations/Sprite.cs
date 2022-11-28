@@ -19,7 +19,6 @@ namespace wobble.Animations
         private int width;
         private int height;
         private Bitmap bitmap;
-        private int directionY = 20;
 
         public Sprite(int width, int height, Bitmap bitmap)
         {
@@ -35,7 +34,7 @@ namespace wobble.Animations
             canvas.DrawBitmap(bitmap, x, y, null);
         }
 
-        public void move()
+        public void Move()
         {
             y += 20;
             if (y >= height)
@@ -43,13 +42,5 @@ namespace wobble.Animations
                 y = -bitmap.Height;
             }
         }
-        //public void Move()
-        //{
-        //    y += directionY;
-        //    if (y >= bitmap.Height || y<= -height - bitmap.Height)
-        //    {
-        //        directionY *= -1;
-        //    }
-        //}
     }
 }
