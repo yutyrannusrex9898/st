@@ -25,8 +25,7 @@ namespace wobble.Animations
             this.width = width;
             this.height = height;
             this.x = 0;
-            this.y = -bitmap.Height;
-            //this.bitmap = bitmap;
+            this.y = 0;
             this.bitmap = Bitmap.CreateScaledBitmap(bitmap, 100, 100, false);
         }
 
@@ -35,30 +34,56 @@ namespace wobble.Animations
             canvas.DrawBitmap(bitmap, x, y, null);
         }
 
-        int xSpeed = 20;
-        int ySpeed = 20;
-
-        int xDirection = 1;
-        int yDirection = 1;
+        Point p1 = new Point(0, 0);
+        Point p2 = new Point(2, 3);
+        int speed = 20;
+        double xRate = 0.0;
+        double yRate = 0.0;
 
         public void Move()
         {
-            xDirection = getDirection(xDirection, x, x + bitmap.Width, width);
-            x += xSpeed * xDirection;
+            //int a = ((DateTime.Now.Second / 10) - 3);
+            //int b = 3 * ((DateTime.Now.Second % 10) - 5) / 5;
+            //Point p2 = new Point(a, b);
+            double angle = getAngleBetweenPoints(p1, p2);
 
-            yDirection = getDirection(yDirection, y, y + bitmap.Height, height);
-            y += ySpeed * yDirection;
+            int seconds = DateTime.Now.Second % 10;
+            Random rnd = new Random(seconds);
+            angle = rnd.NextDouble() * Math.PI * 2;
+
+            xRate = getXRate(angle);
+            yRate = getYRate(angle);
+
+            int jumpX = ((int)Math.Round(speed * xRate));
+            if (x + jumpX + bitmap.Width >= width)
+                x = width - bitmap.Width;
+            else if (x + jumpX < 0)
+                x = 0;
+            else
+                x += jumpX;
+
+            int jumpY = ((int)Math.Round(speed * yRate));
+            if (y + jumpY + bitmap.Height >= height)
+                y = height - bitmap.Height;
+            else if (y + jumpY < 0)
+                y = 0;
+            else
+                y += jumpY;
         }
 
-        private int getDirection(int initDirection, int startLocation, int endLocation, int length)
+        private double getAngleBetweenPoints(Point p1, Point p2)
         {
-            if (startLocation < 0)
-                return 1;
+            return Math.Atan2(p2.Y - p1.Y, p2.X - p1.X);
+        }
 
-            if (endLocation >= length)
-                return -1;
+        private double getXRate(double angle)
+        {
+            return Math.Cos(angle);
+        }
 
-            return initDirection;
+        private double getYRate(double angle)
+        {
+            return Math.Sin(angle);
         }
     }
 }

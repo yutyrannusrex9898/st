@@ -18,7 +18,7 @@ namespace wobble.Animations
         {
             this.width = width;
             this.height = height;
-            Bitmap bitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.Cube);
+            Bitmap bitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.Player);
             sprite = new Sprite(width, height, bitmap);
 
             thread = new Thread(this);
