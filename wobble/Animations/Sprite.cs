@@ -26,7 +26,8 @@ namespace wobble.Animations
             this.height = height;
             this.x = 0;
             this.y = -bitmap.Height;
-            this.bitmap = bitmap;
+            //this.bitmap = bitmap;
+            this.bitmap = Bitmap.CreateScaledBitmap(bitmap, 100, 100, false);
         }
 
         public void Draw(Canvas canvas)
@@ -34,13 +35,30 @@ namespace wobble.Animations
             canvas.DrawBitmap(bitmap, x, y, null);
         }
 
+        int xSpeed = 20;
+        int ySpeed = 20;
+
+        int xDirection = 1;
+        int yDirection = 1;
+
         public void Move()
         {
-            y += 20;
-            if (y >= height)
-            {
-                y = -bitmap.Height;
-            }
+            xDirection = getDirection(xDirection, x, x + bitmap.Width, width);
+            x += xSpeed * xDirection;
+
+            yDirection = getDirection(yDirection, y, y + bitmap.Height, height);
+            y += ySpeed * yDirection;
+        }
+
+        private int getDirection(int initDirection, int startLocation, int endLocation, int length)
+        {
+            if (startLocation < 0)
+                return 1;
+
+            if (endLocation >= length)
+                return -1;
+
+            return initDirection;
         }
     }
 }
