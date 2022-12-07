@@ -27,17 +27,14 @@ namespace wobble
             base.OnWindowFocusChanged(hasFocus);
             if (hasFocus)
             {
-                int fWidth = frame.Width;
-                int fHeight = frame.Height;
-                movementView = new MovementView(this, fWidth, fHeight);
+                movementView = new MovementView(this, frame.Width, frame.Height);
                 frame.AddView(movementView);
             }
         }
-         
+
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
