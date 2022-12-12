@@ -8,15 +8,16 @@ namespace wobble.Animations
     {
         public static Point mainLocation = new Point(300, 300);
 
-        private static int ringRadius = 150;
-        private static int ringThickness = 30;
-        private static Paint ringPaint = getRingPaint();
+        public static int ringRadius = 150;
+        public static int ringThickness = 30;
+        public static int joystickWorkingRadius = ringRadius - ringThickness;
+        public static Paint ringPaint = getRingPaint();
 
-        private static int centerPointRadius = 30;
-        private static Paint centerPointPaint = getCenterPointPaint();
+        public static int centerPointRadius = 30;
+        public static Paint centerPointPaint = getCenterPointPaint();
 
-        private static int trackingPointRadius = 25;
-        private static Paint trackingPointPaint = getTrackingPointPaint();
+        public static int trackingPointRadius = 25;
+        public static Paint trackingPointPaint = getTrackingPointPaint();
 
         private static Paint getRingPaint()
         {
@@ -46,9 +47,9 @@ namespace wobble.Animations
             return paint;
         }
 
-        private int frameWidth;
-        private int frameHeight;
-        private Point trackingPointLocation;
+        public int frameWidth { get; }
+        public int frameHeight { get; }
+        public Point trackingPointLocation { get; set; }
 
         public Joystick(int frameWidth, int frameHeight)
         {
@@ -68,10 +69,12 @@ namespace wobble.Animations
         {
             canvas.DrawCircle(mainLocation.X, mainLocation.Y, ringRadius, ringPaint);
         }
+
         private void drawCenterPoint(Canvas canvas)
         {
             canvas.DrawCircle(mainLocation.X, mainLocation.Y, centerPointRadius, centerPointPaint);
         }
+
         private void drawTrackingPoint(Canvas canvas)
         {
             canvas.DrawCircle(trackingPointLocation.X, trackingPointLocation.Y, trackingPointRadius, trackingPointPaint);
@@ -79,7 +82,6 @@ namespace wobble.Animations
 
         public void Move(double angle, double distance)
         {
-            distance = Math.Min(distance, ringRadius - ringThickness);  
             trackingPointLocation = Utils.GetMovedPointByAngleAndDistance(mainLocation, angle, distance);
         }
     }

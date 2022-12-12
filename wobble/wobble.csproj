@@ -63,6 +63,7 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animations\Player.cs" />
     <Compile Include="Animations\Sprite.cs" />
     <Compile Include="Animations\MovementView.cs" />
     <Compile Include="Animations\Joystick.cs" />

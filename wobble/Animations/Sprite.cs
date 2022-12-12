@@ -3,18 +3,19 @@ using System;
 
 namespace wobble.Animations
 {
-    public class Sprite
+    public abstract class Sprite
     {
-        private int x;
-        private int y;
-        private int frameWidth;
-        private int frameHeight;
+        protected abstract int TopSpeed { get; }
 
-        int speed = 20;
-        double xRate = 0.0;
-        double yRate = 0.0;
+        protected int x;
+        protected int y;
+        protected int frameWidth;
+        protected int frameHeight;
 
-        private Bitmap bitmap;
+        protected double xSpeed = 0.0;
+        protected double ySpeed = 0.0;
+
+        protected readonly Bitmap bitmap;
 
         public Sprite(int frameWidth, int frameHeight, Bitmap bitmap)
         {
@@ -30,27 +31,6 @@ namespace wobble.Animations
             canvas.DrawBitmap(bitmap, x, y, null);
         }
 
-        public void Move(double angle, double distance)
-        {
-            xRate = Utils.GetXRate(angle);
-            yRate = Utils.GetYRate(angle);
-            Console.WriteLine(Math.Min(distance/120,1));
-
-            int jumpX = ((int)Math.Round((speed * xRate) * (Math.Min(distance / 120, 1))));
-            if (x + jumpX + bitmap.Width >= frameWidth)
-                x = frameWidth - bitmap.Width;
-            else if (x + jumpX < 0)
-                x = 0;
-            else
-                x += jumpX;
-
-            int jumpY = ((int)Math.Round((speed * yRate) * (Math.Min(distance / 120, 1))));
-            if (y + jumpY + bitmap.Height >= frameHeight)
-                y = frameHeight - bitmap.Height;
-            else if (y + jumpY < 0)
-                y = 0;
-            else
-                y += jumpY;
-        }
+        public abstract void Move(double angle, double distance);
     }
 }

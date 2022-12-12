@@ -1,11 +1,7 @@
 ﻿using Android.Content;
 using Android.Graphics;
 using Android.Views;
-using AndroidX.Core.Content;
 using Java.Lang;
-using System;
-using System.Numerics;
-using Xamarin.Essentials;
 
 namespace wobble.Animations
 {
@@ -15,8 +11,9 @@ namespace wobble.Animations
         int frameHeight;
         double angle = 0;
         double distance = 0;
+        double actualDistance = 0;
 
-        private Sprite sprite;
+        private Player player;
         private Joystick joystick;
         private Canvas canvas;
         private Thread thread;
@@ -27,7 +24,7 @@ namespace wobble.Animations
             this.frameHeight = frameHeight;
 
             Bitmap bitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.Player);
-            sprite = new Sprite(frameWidth, frameHeight, bitmap);
+            player = new Player(frameWidth, frameHeight, bitmap);
             joystick = new Joystick(frameWidth, frameHeight);
 
             thread = new Thread(this);
@@ -40,7 +37,7 @@ namespace wobble.Animations
             {
                 canvas = Holder.LockCanvas();
                 canvas.DrawColor(Color.Wheat);
-                sprite.Draw(canvas);
+                player.Draw(canvas);
                 joystick.Draw(canvas);
                 Holder.UnlockCanvasAndPost(canvas);
             }
@@ -51,7 +48,7 @@ namespace wobble.Animations
             while (true)
             {
                 drawSurface();
-                sprite.Move(this.angle, this.distance);
+                player.Move(this.angle, this.distance);
                 joystick.Move(this.angle, this.distance);
             }
         }
@@ -60,8 +57,10 @@ namespace wobble.Animations
         {
             int pointerIndex = args.ActionIndex;
             Point fingerLocation = new Point((int)args.GetX(pointerIndex), (int)args.GetY(pointerIndex));
+
             this.angle = Utils.GetAngleBetweenPoints(Joystick.mainLocation, fingerLocation);
-            this.distance = Utils.GetDistanceBetweenPoints(Joystick.mainLocation, fingerLocation);
+            this.actualDistance = Utils.GetDistanceBetweenPoints(Joystick.mainLocation, fingerLocation);
+            this.distance = Math.Min(actualDistance, Joystick.joystickWorkingRadius);
 
             return true;
         }
