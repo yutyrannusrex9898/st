@@ -31,7 +31,7 @@ namespace wobble.Animations
             thread.Start();
         }
 
-        public void drawSurface()
+        private void drawSurface()
         {
             if (Holder.Surface.IsValid)
             {
@@ -48,8 +48,8 @@ namespace wobble.Animations
             while (true)
             {
                 drawSurface();
-                player.Move(this.angle, this.distance);
-                joystick.Move(this.angle, this.distance);
+                player.CalculateNextControlledMovement(this.angle, this.distance);
+                joystick.CalculateNextControlledMovement(this.angle, this.distance);
             }
         }
 
@@ -61,6 +61,9 @@ namespace wobble.Animations
             this.angle = Utils.GetAngleBetweenPoints(Joystick.mainLocation, fingerLocation);
             this.actualDistance = Utils.GetDistanceBetweenPoints(Joystick.mainLocation, fingerLocation);
             this.distance = Math.Min(actualDistance, Joystick.joystickWorkingRadius);
+
+
+
 
             return true;
         }

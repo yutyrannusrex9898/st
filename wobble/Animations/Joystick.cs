@@ -4,7 +4,7 @@ using Xamarin.Essentials;
 
 namespace wobble.Animations
 {
-    public class Joystick
+    public class Joystick : ControlledSprite
     {
         public static Point mainLocation = new Point(300, 300);
 
@@ -18,6 +18,10 @@ namespace wobble.Animations
 
         public static int trackingPointRadius = 25;
         public static Paint trackingPointPaint = getTrackingPointPaint();
+
+        protected override int TopSpeed { get => 0; }
+        protected override int Width { get => 0; }
+        protected override int Height { get => 0; }
 
         private static Paint getRingPaint()
         {
@@ -47,16 +51,7 @@ namespace wobble.Animations
             return paint;
         }
 
-        public int frameWidth { get; }
-        public int frameHeight { get; }
-        public Point trackingPointLocation { get; set; }
-
-        public Joystick(int frameWidth, int frameHeight)
-        {
-            this.trackingPointLocation = new Point(mainLocation);
-            this.frameWidth = frameWidth;
-            this.frameHeight = frameHeight;
-        }
+        public Joystick(int frameWidth, int frameHeight) : base(frameWidth, frameWidth, null) { }
 
         public void Draw(Canvas canvas)
         {
@@ -77,12 +72,19 @@ namespace wobble.Animations
 
         private void drawTrackingPoint(Canvas canvas)
         {
-            canvas.DrawCircle(trackingPointLocation.X, trackingPointLocation.Y, trackingPointRadius, trackingPointPaint);
+            canvas.DrawCircle(this.x, this.y, trackingPointRadius, trackingPointPaint);
         }
 
-        public void Move(double angle, double distance)
+        public override void CalculateNextControlledMovement(double angle, double distance)
         {
-            trackingPointLocation = Utils.GetMovedPointByAngleAndDistance(mainLocation, angle, distance);
+            CalculateNextPosition(angle, distance);
+        }
+
+        public override void CalculateNextPosition(double angle, double distance)
+        {
+            Point trackingPointLocation = Utils.GetMovedPointByAngleAndDistance(mainLocation, angle, distance);
+            this.x = trackingPointLocation.X;
+            this.y = trackingPointLocation.Y;
         }
     }
 }
