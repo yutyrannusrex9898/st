@@ -34,8 +34,9 @@ namespace wobble.Animations
         {
             xRate = Utils.GetXRate(angle);
             yRate = Utils.GetYRate(angle);
+            Console.WriteLine(Math.Min(distance/120,1));
 
-            int jumpX = ((int)Math.Round(speed * xRate));
+            int jumpX = ((int)Math.Round((speed * xRate) * (Math.Min(distance / 120, 1))));
             if (x + jumpX + bitmap.Width >= frameWidth)
                 x = frameWidth - bitmap.Width;
             else if (x + jumpX < 0)
@@ -43,7 +44,7 @@ namespace wobble.Animations
             else
                 x += jumpX;
 
-            int jumpY = ((int)Math.Round(speed * yRate));
+            int jumpY = ((int)Math.Round((speed * yRate) * (Math.Min(distance / 120, 1))));
             if (y + jumpY + bitmap.Height >= frameHeight)
                 y = frameHeight - bitmap.Height;
             else if (y + jumpY < 0)

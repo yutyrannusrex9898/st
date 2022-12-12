@@ -1,5 +1,6 @@
 ﻿using Java.Lang;
 using Android.Graphics;
+using Xamarin.Essentials;
 
 namespace wobble.Animations
 {
@@ -78,7 +79,7 @@ namespace wobble.Animations
 
         public void Move(double angle, double distance)
         {
-            distance = Math.Min(distance, ringRadius - ringThickness);
+            distance = Math.Min(distance, ringRadius - ringThickness);  
             trackingPointLocation = Utils.GetMovedPointByAngleAndDistance(mainLocation, angle, distance);
         }
     }
