@@ -56,13 +56,18 @@ namespace wobble.Animations
         public override bool OnTouchEvent(MotionEvent args)
         {
             int pointerIndex = args.ActionIndex;
+            MotionEventActions action = args.Action & MotionEventActions.Mask;
             Point fingerLocation = new Point((int)args.GetX(pointerIndex), (int)args.GetY(pointerIndex));
 
             this.angle = Utils.GetAngleBetweenPoints(Joystick.mainLocation, fingerLocation);
             this.actualDistance = Utils.GetDistanceBetweenPoints(Joystick.mainLocation, fingerLocation);
             this.distance = Math.Min(actualDistance, Joystick.joystickWorkingRadius);
 
-
+            if (action == MotionEventActions.Up)
+            {
+                fingerLocation = Joystick.mainLocation;
+                distance = 0;
+            }
 
 
             return true;
