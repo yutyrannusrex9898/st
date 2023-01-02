@@ -36,10 +36,13 @@ namespace wobble.Animations
             if (Holder.Surface.IsValid)
             {
                 canvas = Holder.LockCanvas();
-                canvas.DrawColor(Color.Wheat);
-                player.Draw(canvas);
-                joystick.Draw(canvas);
-                Holder.UnlockCanvasAndPost(canvas);
+                if (canvas != null)
+                {
+                    canvas.DrawColor(Color.Wheat);
+                    player.Draw(canvas);
+                    joystick.Draw(canvas);
+                    Holder.UnlockCanvasAndPost(canvas);
+                }
             }
         }
 
@@ -59,16 +62,15 @@ namespace wobble.Animations
             MotionEventActions action = args.Action & MotionEventActions.Mask;
             Point fingerLocation = new Point((int)args.GetX(pointerIndex), (int)args.GetY(pointerIndex));
 
-            this.angle = Utils.GetAngleBetweenPoints(Joystick.mainLocation, fingerLocation);
-            this.actualDistance = Utils.GetDistanceBetweenPoints(Joystick.mainLocation, fingerLocation);
+            this.angle = Utils.GetAngleBetweenPoints(joystick.MainLocation, fingerLocation);
+            this.actualDistance = Utils.GetDistanceBetweenPoints(joystick.MainLocation, fingerLocation);
             this.distance = Math.Min(actualDistance, Joystick.joystickWorkingRadius);
 
             if (action == MotionEventActions.Up)
             {
-                fingerLocation = Joystick.mainLocation;
+                fingerLocation = joystick.MainLocation;
                 this.distance = 0;
             }
-
 
             return true;
         }

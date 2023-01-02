@@ -1,7 +1,6 @@
 ﻿using Android.App;
 using Android.OS;
 using Android.Runtime;
-using AndroidX.AppCompat.App;
 using Android.Widget;
 using Android.Util;
 using wobble.Animations;
@@ -9,7 +8,7 @@ using wobble.Animations;
 namespace wobble
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
-    public class MainActivity : AppCompatActivity
+    public class MainActivity : Activity
     {
         private FrameLayout frame;
         MovementView movementView;

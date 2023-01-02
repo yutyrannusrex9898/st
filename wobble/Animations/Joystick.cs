@@ -1,13 +1,9 @@
-﻿using Java.Lang;
-using Android.Graphics;
-using Xamarin.Essentials;
+﻿using Android.Graphics;
 
 namespace wobble.Animations
 {
     public class Joystick : ControlledSprite
     {
-        public static Point mainLocation = new Point(300, 300);
-
         public static int ringRadius = 150;
         public static int ringThickness = 30;
         public static int joystickWorkingRadius = ringRadius - ringThickness;
@@ -51,26 +47,31 @@ namespace wobble.Animations
             return paint;
         }
 
-        public Joystick(int frameWidth, int frameHeight) : base(frameWidth, frameWidth, null) { }
+        public Point MainLocation { get; }
 
-        public void Draw(Canvas canvas)
+        public Joystick(int frameWidth, int frameHeight) : base(frameWidth, frameHeight, null)
         {
-            drawRing(canvas);
-            drawCenterPoint(canvas);
-            drawTrackingPoint(canvas);
+            MainLocation = new Point(300, frameHeight - 300);
         }
 
-        private void drawRing(Canvas canvas)
+        public new void Draw(Canvas canvas)
         {
-            canvas.DrawCircle(mainLocation.X, mainLocation.Y, ringRadius, ringPaint);
+            DrawRing(canvas);
+            DrawCenterPoint(canvas);
+            DrawTrackingPoint(canvas);
         }
 
-        private void drawCenterPoint(Canvas canvas)
+        private void DrawRing(Canvas canvas)
         {
-            canvas.DrawCircle(mainLocation.X, mainLocation.Y, centerPointRadius, centerPointPaint);
+            canvas.DrawCircle(MainLocation.X, MainLocation.Y, ringRadius, ringPaint);
         }
 
-        private void drawTrackingPoint(Canvas canvas)
+        private void DrawCenterPoint(Canvas canvas)
+        {
+            canvas.DrawCircle(MainLocation.X, MainLocation.Y, centerPointRadius, centerPointPaint);
+        }
+
+        private void DrawTrackingPoint(Canvas canvas)
         {
             canvas.DrawCircle(this.x, this.y, trackingPointRadius, trackingPointPaint);
         }
@@ -82,7 +83,7 @@ namespace wobble.Animations
 
         public override void CalculateNextPosition(double angle, double distance)
         {
-            Point trackingPointLocation = Utils.GetMovedPointByAngleAndDistance(mainLocation, angle, distance);
+            Point trackingPointLocation = Utils.GetMovedPointByAngleAndDistance(MainLocation, angle, distance);
             this.x = trackingPointLocation.X;
             this.y = trackingPointLocation.Y;
         }
