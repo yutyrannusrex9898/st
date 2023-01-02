@@ -66,7 +66,7 @@ namespace wobble.Animations
             if (action == MotionEventActions.Up)
             {
                 fingerLocation = Joystick.mainLocation;
-                distance = 0;
+                this.distance = 0;
             }
 
 
