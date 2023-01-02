@@ -50,7 +50,6 @@ namespace wobble.Animations
         {
             float degrees = (Math.Abs(Utils.RadiansToDegrees(radians)) + 90) % 360;
             int bitmapIndex = (int)(degrees / bitmapAngleSize);
-            System.Console.WriteLine(radians + " - " + degrees + " - " + bitmapIndex);
             currentBitmap = rotatedBitmaps[bitmapIndex];
         }
     }
