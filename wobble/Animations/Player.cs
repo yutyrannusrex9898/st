@@ -1,12 +1,10 @@
 ﻿using Android.Graphics;
-using System;
 
 namespace wobble.Animations
 {
     public class Player : ControlledSprite
     {
         private static int DashMaxTimer { get => 7; }
-
         protected override int TopSpeed { get => 20; }
         private int DashMultiplier { get => 3; }
         private int DashTimer { set; get; }
@@ -15,55 +13,31 @@ namespace wobble.Animations
 
         public Player(int frameWidth, int frameHeight, Bitmap bitmap) : base(frameWidth, frameHeight, bitmap) { }
 
-        public override void CalculateNextControlledMovement(double angle, double distance)
+        public override void Draw(Canvas canvas)
         {
-            CalculateNextAngle(angle);
-            CalculateNextPosition(angle, distance);
+            canvas.DrawBitmap(currentBitmap, x, y, null);
         }
 
-        public override void CalculateNextPosition(double angle, double distance)
+        public override void CalculateNextPosition()
         {
-            double speedMultiplier = CalculateSpeedMultiplier(distance);
-            CalculateNextXLocation(angle, distance, speedMultiplier);
-            CalculateNextYLocation(angle, distance, speedMultiplier);
-            if (DashTimer > 0) DashTimer--;
+            double speedMultiplier = CalculateSpeedMultiplier();
+            CalculateNextXLocation(speedMultiplier);
+            CalculateNextYLocation(speedMultiplier);
+            if (DashTimer > 0)
+                DashTimer--;
         }
 
-        private double CalculateSpeedMultiplier(double distance)
+        private double CalculateSpeedMultiplier()
         {
             if (DashTimer > 0)
                 return DashMultiplier;
             else
-                return CalculateJoystickMultiplier(distance);
+                return CalculateJoystickMultiplier();
         }
 
-        private double CalculateJoystickMultiplier(double distance)
+        private double CalculateJoystickMultiplier()
         {
-            return distance / Joystick.joystickWorkingRadius;
-        }
-
-        private void CalculateNextXLocation(double angle, double distance, double speedMultiplier)
-        {
-            xSpeed = Utils.GetXRate(angle);
-            int jumpX = (int)Math.Round(TopSpeed * xSpeed * speedMultiplier);
-            if (x + jumpX + this.Width >= frameWidth)
-                x = frameWidth - this.Width;
-            else if (x + jumpX < 0)
-                x = 0;
-            else
-                x += jumpX;
-        }
-
-        private void CalculateNextYLocation(double angle, double distance, double speedMultiplier)
-        {
-            ySpeed = Utils.GetYRate(angle);
-            int jumpY = (int)Math.Round(TopSpeed * ySpeed * speedMultiplier);
-            if (y + jumpY + this.Height >= frameHeight)
-                y = frameHeight - this.Height;
-            else if (y + jumpY < 0)
-                y = 0;
-            else
-                y += jumpY;
+            return Distance / Joystick.joystickWorkingRadius;
         }
 
         public void InitDash()

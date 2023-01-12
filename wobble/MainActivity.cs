@@ -2,13 +2,13 @@
 using Android.OS;
 using Android.Runtime;
 using Android.Widget;
-using Android.Util;
+using AndroidX.AppCompat.App;
 using wobble.Animations;
 
 namespace wobble
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
-    public class MainActivity : Activity
+    public class MainActivity : AppCompatActivity
     {
         private FrameLayout frame;
         MovementView movementView;
@@ -18,7 +18,7 @@ namespace wobble
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_movement);
             frame = FindViewById<FrameLayout>(Resource.Id.flMainFrame);
-            Log.Debug("MovementActivity", "OnCreate" + frame.Width);
+            SupportActionBar?.Hide();
         }
 
         public override void OnWindowFocusChanged(bool hasFocus)

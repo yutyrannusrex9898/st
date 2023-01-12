@@ -54,7 +54,7 @@ namespace wobble.Animations
             MainLocation = new Point(300, frameHeight - 300);
         }
 
-        public new void Draw(Canvas canvas)
+        public override void Draw(Canvas canvas)
         {
             DrawRing(canvas);
             DrawCenterPoint(canvas);
@@ -76,14 +76,9 @@ namespace wobble.Animations
             canvas.DrawCircle(this.x, this.y, trackingPointRadius, trackingPointPaint);
         }
 
-        public override void CalculateNextControlledMovement(double angle, double distance)
+        public override void CalculateNextPosition()
         {
-            CalculateNextPosition(angle, distance);
-        }
-
-        public override void CalculateNextPosition(double angle, double distance)
-        {
-            Point trackingPointLocation = Utils.GetMovedPointByAngleAndDistance(MainLocation, angle, distance);
+            Point trackingPointLocation = Utils.GetMovedPointByAngleAndDistance(MainLocation, Angle, Distance);
             this.x = trackingPointLocation.X;
             this.y = trackingPointLocation.Y;
         }

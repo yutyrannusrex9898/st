@@ -11,7 +11,9 @@ namespace wobble.Animations
         protected abstract int TopSpeed { get; }
         protected abstract int Width { get; }
         protected abstract int Height { get; }
-        protected int Angle { get; set; }
+        protected double Angle { get; set; }
+        protected double Distance { get; set; }
+
 
         protected int x = 0;
         protected int y = 0;
@@ -41,16 +43,55 @@ namespace wobble.Animations
             }
         }
 
-        public void Draw(Canvas canvas)
+        public abstract void Draw(Canvas canvas);
+
+        public void UpdateAngleAndDistance(double angle, double distance)
         {
-            canvas.DrawBitmap(currentBitmap, x, y, null);
+            this.Angle = angle;
+            this.Distance = distance;
         }
 
-        public void CalculateNextAngle(double radians)
+        public void CalculateNextSpriteAngle()
         {
-            float degrees = (Math.Abs(Utils.RadiansToDegrees(radians)) + 90) % 360;
-            int bitmapIndex = (int)(degrees / bitmapAngleSize);
-            currentBitmap = rotatedBitmaps[bitmapIndex];
+            if (this.currentBitmap != null)
+            {
+                float degrees = (Math.Abs(Utils.RadiansToDegrees(Angle)) + 90) % 360;
+                int bitmapIndex = (int)(degrees / bitmapAngleSize);
+                currentBitmap = rotatedBitmaps[bitmapIndex];
+            }
+        }
+
+        public abstract void CalculateNextPosition();
+
+        public Point GetLocation()
+        {
+            int x = this.x + (Width / 2);
+            int y = this.y + (Height / 2);
+            return new Point(x, y);
+        }
+
+        protected void CalculateNextXLocation(double speedMultiplier)
+        {
+            xSpeed = Utils.GetXRate(Angle);
+            int jumpX = (int)Math.Round(TopSpeed * xSpeed * speedMultiplier);
+            if (x + jumpX + this.Width >= frameWidth)
+                x = frameWidth - this.Width;
+            else if (x + jumpX < 0)
+                x = 0;
+            else
+                x += jumpX;
+        }
+
+        protected void CalculateNextYLocation(double speedMultiplier)
+        {
+            ySpeed = Utils.GetYRate(Angle);
+            int jumpY = (int)Math.Round(TopSpeed * ySpeed * speedMultiplier);
+            if (y + jumpY + this.Height >= frameHeight)
+                y = frameHeight - this.Height;
+            else if (y + jumpY < 0)
+                y = 0;
+            else
+                y += jumpY;
         }
     }
 }
