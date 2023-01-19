@@ -20,6 +20,7 @@ namespace wobble.Animations
         private Player player;
         private Joystick joystick;
         private EnemyRammer enemyRammer;
+        private EnemyPistoleer enemyPistoleer;
 
 
         private Canvas canvas;
@@ -32,10 +33,12 @@ namespace wobble.Animations
 
             Bitmap playerBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.Player);
             Bitmap enemyRammerBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.Cube);
+            Bitmap enemyPistoleerBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.Cube);
 
             player = new Player(frameWidth, frameHeight, playerBitmap);
             joystick = new Joystick(frameWidth, frameHeight);
             enemyRammer = new EnemyRammer(frameWidth, frameHeight, enemyRammerBitmap, player);
+            enemyPistoleer = new EnemyPistoleer(frameWidth, frameHeight, enemyRammerBitmap, player);
 
             thread = new Thread(this);
             thread.Start();
@@ -52,6 +55,7 @@ namespace wobble.Animations
                     player.Draw(canvas);
                     joystick.Draw(canvas);
                     enemyRammer.Draw(canvas);
+                    enemyPistoleer.Draw(canvas);
                     Holder.UnlockCanvasAndPost(canvas);
                 }
             }
@@ -65,6 +69,7 @@ namespace wobble.Animations
                 player.CalculateNextControlledMovement(this.angle, this.distance);
                 joystick.CalculateNextControlledMovement(this.angle, this.distance);
                 enemyRammer.CalculateNextPosition();
+                enemyPistoleer.CalculateNextPosition();
             }
         }
 

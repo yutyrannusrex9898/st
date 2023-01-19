@@ -1,5 +1,5 @@
-﻿using Java.Lang;
-using Android.Graphics;
+﻿using Android.Graphics;
+using Java.Lang;
 
 namespace wobble
 {
@@ -53,6 +53,10 @@ namespace wobble
             radians += 2 * Math.Pi;
             radians %= 2 * Math.Pi;
             return (float)(180 / Math.Pi * radians);
+        }
+        public static double InvertAngle(double angle)
+        {
+            return (angle + Math.Pi) % (2 * Math.Pi);
         }
     }
 }
