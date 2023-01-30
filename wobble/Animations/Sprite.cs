@@ -100,5 +100,32 @@ namespace wobble.Animations
         {
             return new Point((int)(this.InitVector.X * frameWidth), (int)(this.InitVector.Y * frameHeight));
         }
+
+        public bool IsColliding(Sprite other)
+        {
+            int thisLeftX = this.x;
+            int thisRightX = this.x + this.Width;
+            int thisTopY = this.y;
+            int thisBottomY = this.y + this.Height;
+
+            int otherLeftX = other.x;
+            int otherRightX = other.x + other.Width;
+            int otherTopY = other.y;
+            int otherBottomY = other.y + other.Height;
+
+
+            bool xCollision = (otherLeftX >= thisLeftX && otherLeftX <= thisRightX) || (otherRightX >= thisLeftX && otherRightX <= thisRightX);
+            bool yCollision = (otherTopY >= thisTopY && otherTopY <= thisBottomY) || (otherBottomY >= thisTopY && otherBottomY <= thisBottomY);
+
+            return xCollision && yCollision;
+        }
+
+        public void ResetLocation()
+        {
+            Point initLocationPoint = this.GetLocalPoint();
+            this.x = initLocationPoint.X;
+            this.y = initLocationPoint.Y;
+            this.Angle = this.InitVector.Angle;
+        }
     }
 }

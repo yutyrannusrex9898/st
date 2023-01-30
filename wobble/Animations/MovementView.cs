@@ -7,6 +7,7 @@ namespace wobble.Animations
 {
     internal class MovementView : SurfaceView, IRunnable
     {
+        int lives = 3;
 
         static int joystickFingerIndex = 0;
 
@@ -16,6 +17,7 @@ namespace wobble.Animations
         double angle = 0;
         double distance = 0;
         double actualDistance = 0;
+
 
         private Player player;
         private Joystick joystick;
@@ -66,10 +68,33 @@ namespace wobble.Animations
             while (true)
             {
                 drawSurface();
-                player.CalculateNextControlledMovement(this.angle, this.distance);
-                joystick.CalculateNextControlledMovement(this.angle, this.distance);
-                enemyRammer.CalculateNextMovement();
-                enemyPistoleer.CalculateNextMovement();
+
+                bool isDead = player.IsColliding(enemyRammer) || player.IsColliding(enemyPistoleer);
+
+                if (isDead)
+                {
+                    if (lives > 0)
+                    {
+                        lives--;
+                        player.ResetLocation();
+                        enemyRammer.ResetLocation();
+                        enemyPistoleer.ResetLocation();
+                        System.Console.WriteLine($"Down to {lives} lives.");
+                    }
+                    else
+                    {
+                        System.Console.WriteLine("Game Over");
+                        this.angle = 0;
+                        this.distance = 0;
+                    }
+                }
+                else
+                {
+                    player.CalculateNextControlledMovement(this.angle, this.distance);
+                    joystick.CalculateNextControlledMovement(this.angle, this.distance);
+                    enemyRammer.CalculateNextMovement();
+                    enemyPistoleer.CalculateNextMovement();
+                }
             }
         }
 
@@ -110,6 +135,7 @@ namespace wobble.Animations
             this.actualDistance = Utils.GetDistanceBetweenPoints(joystick.GetLocalPoint(), fingerLocation);
             this.distance = Math.Min(actualDistance, Joystick.joystickWorkingRadius);
         }
+
         private void HandleDashTouch(Point fingerLocation)
         {
             this.player.InitDash();
