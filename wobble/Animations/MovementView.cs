@@ -32,13 +32,13 @@ namespace wobble.Animations
             this.frameHeight = frameHeight;
 
             Bitmap playerBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.Player);
-            Bitmap enemyRammerBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.Cube);
-            Bitmap enemyPistoleerBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.Cube);
+            Bitmap enemyRammerBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.Rammer);
+            Bitmap enemyPistoleerBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.Pistoleer);
 
-            player = new Player(frameWidth, frameHeight, playerBitmap);
-            joystick = new Joystick(frameWidth, frameHeight);
-            enemyRammer = new EnemyRammer(frameWidth, frameHeight, enemyRammerBitmap, player);
-            enemyPistoleer = new EnemyPistoleer(frameWidth, frameHeight, enemyRammerBitmap, player);
+            player = new Player(frameWidth, frameHeight, playerBitmap, Constants.LEVEL_A.initPlayerVector);
+            joystick = new Joystick(frameWidth, frameHeight, Constants.joystickVector);
+            enemyRammer = new EnemyRammer(frameWidth, frameHeight, enemyRammerBitmap, player, Constants.LEVEL_A.initRammerVector);
+            enemyPistoleer = new EnemyPistoleer(frameWidth, frameHeight, enemyPistoleerBitmap, player, Constants.LEVEL_A.initPistoleerVector);
 
             thread = new Thread(this);
             thread.Start();
@@ -68,8 +68,8 @@ namespace wobble.Animations
                 drawSurface();
                 player.CalculateNextControlledMovement(this.angle, this.distance);
                 joystick.CalculateNextControlledMovement(this.angle, this.distance);
-                enemyRammer.CalculateNextPosition();
-                enemyPistoleer.CalculateNextPosition();
+                enemyRammer.CalculateNextMovement();
+                enemyPistoleer.CalculateNextMovement();
             }
         }
 
@@ -106,8 +106,8 @@ namespace wobble.Animations
 
         private void HandleJoystickTouch(Point fingerLocation)
         {
-            this.angle = Utils.GetAngleBetweenPoints(joystick.MainLocation, fingerLocation);
-            this.actualDistance = Utils.GetDistanceBetweenPoints(joystick.MainLocation, fingerLocation);
+            this.angle = Utils.GetAngleBetweenPoints(joystick.GetLocalPoint(), fingerLocation);
+            this.actualDistance = Utils.GetDistanceBetweenPoints(joystick.GetLocalPoint(), fingerLocation);
             this.distance = Math.Min(actualDistance, Joystick.joystickWorkingRadius);
         }
         private void HandleDashTouch(Point fingerLocation)

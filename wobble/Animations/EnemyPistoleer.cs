@@ -8,12 +8,10 @@ namespace wobble.Animations
         protected override int Width => 90;
         protected override int Height => 90;
 
-        protected override int SpawnLocationX => 200;
-        protected override int SpawnLocationY => 200;
-
-        protected override double SpawnAngle => 0.785398163;
-
-        public EnemyPistoleer(int frameWidth, int frameHeight, Bitmap bitmap, Player player) : base(frameWidth, frameHeight, bitmap, player) { }
+        public EnemyPistoleer(int frameWidth, int frameHeight, Bitmap bitmap, Player player, Vector initVector) : base(frameWidth, frameHeight, bitmap, player, initVector)
+        {
+            this.Angle = Utils.getRandomAngle();
+        }
 
         public override void CalculateNextPosition()
         {

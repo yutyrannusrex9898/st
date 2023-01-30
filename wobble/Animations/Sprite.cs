@@ -8,6 +8,7 @@ namespace wobble.Animations
         protected static readonly int bitmapAngles = 360;
         protected static readonly int bitmapAngleSize = 360 / bitmapAngles;
 
+        public Vector InitVector { get; set; }
         protected abstract int TopSpeed { get; }
         protected abstract int Width { get; }
         protected abstract int Height { get; }
@@ -15,8 +16,8 @@ namespace wobble.Animations
         protected double Distance { get; set; }
 
 
-        protected int x = 0;
-        protected int y = 0;
+        protected int x;
+        protected int y;
 
         protected int frameWidth;
         protected int frameHeight;
@@ -28,12 +29,13 @@ namespace wobble.Animations
         protected readonly Bitmap[] rotatedBitmaps;
         protected Bitmap currentBitmap;
 
-        public Sprite(int frameWidth, int frameHeight, Bitmap bitmap)
+        public Sprite(int frameWidth, int frameHeight, Bitmap bitmap, Vector initVector)
         {
             this.frameWidth = frameWidth;
             this.frameHeight = frameHeight;
-            this.x = 0;
-            this.y = 0;
+            this.InitVector = initVector;
+            this.x = (int)(initVector.X * frameWidth);
+            this.y = (int)(initVector.Y * frameHeight);
 
             if (bitmap != null)
             {
@@ -92,6 +94,11 @@ namespace wobble.Animations
                 y = 0;
             else
                 y += jumpY;
+        }
+
+        public Point GetLocalPoint()
+        {
+            return new Point((int)(this.InitVector.X * frameWidth), (int)(this.InitVector.Y * frameHeight));
         }
     }
 }

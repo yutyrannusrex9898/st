@@ -11,7 +11,7 @@ namespace wobble.Animations
         protected override int Width { get => 100; }
         protected override int Height { get => 100; }
 
-        public Player(int frameWidth, int frameHeight, Bitmap bitmap) : base(frameWidth, frameHeight, bitmap) { }
+        public Player(int frameWidth, int frameHeight, Bitmap bitmap, Vector initVector) : base(frameWidth, frameHeight, bitmap, initVector) { }
 
         public override void Draw(Canvas canvas)
         {

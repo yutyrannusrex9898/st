@@ -1,14 +1,23 @@
 ﻿using Android.Graphics;
 using Java.Lang;
+using Java.Util;
 
 namespace wobble
 {
     public static class Utils
     {
+        static Random rnd = new Random();
+
+        public static double getRandomAngle()
+        {
+            return rnd.NextDouble() * 2 * Math.Pi;
+        }
+
         public static double GetAngleBetweenPoints(Point p1, Point p2)
         {
             return Math.Atan2(p2.Y - p1.Y, p2.X - p1.X);
         }
+
         public static double GetDistanceBetweenPoints(Point p1, Point p2)
         {
             int a = p1.X - p2.X;
@@ -54,6 +63,7 @@ namespace wobble
             radians %= 2 * Math.Pi;
             return (float)(180 / Math.Pi * radians);
         }
+
         public static double InvertAngle(double angle)
         {
             return (angle + Math.Pi) % (2 * Math.Pi);

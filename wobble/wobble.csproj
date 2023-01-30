@@ -71,9 +71,11 @@
     <Compile Include="Animations\Sprite.cs" />
     <Compile Include="Animations\MovementView.cs" />
     <Compile Include="Animations\Joystick.cs" />
+    <Compile Include="Vector.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -113,10 +115,13 @@
     <AndroidResource Include="Resources\layout\activity_movement.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\Cube.jpg" />
+    <AndroidResource Include="Resources\drawable\Player.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\Player.jpg" />
+    <AndroidResource Include="Resources\drawable\Pistoleer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\Rammer.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
