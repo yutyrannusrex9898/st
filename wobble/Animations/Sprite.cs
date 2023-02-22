@@ -9,12 +9,11 @@ namespace wobble.Animations
         protected static readonly int bitmapAngleSize = 360 / bitmapAngles;
 
         public Vector InitVector { get; set; }
-        protected abstract int TopSpeed { get; }
         protected abstract int Width { get; }
         protected abstract int Height { get; }
         protected double Angle { get; set; }
         protected double Distance { get; set; }
-
+        protected abstract int TopSpeed { get; }
 
         protected int x;
         protected int y;
@@ -47,12 +46,6 @@ namespace wobble.Animations
 
         public abstract void Draw(Canvas canvas);
 
-        public void UpdateAngleAndDistance(double angle, double distance)
-        {
-            this.Angle = angle;
-            this.Distance = distance;
-        }
-
         public void CalculateNextSpriteAngle()
         {
             if (this.currentBitmap != null)
@@ -65,6 +58,12 @@ namespace wobble.Animations
 
         public abstract void CalculateNextPosition();
 
+        public void CalculateNextMovement()
+        {
+            CalculateNextSpriteAngle();
+            CalculateNextPosition();
+        }
+
         public Point GetLocation()
         {
             int x = this.x + (Width / 2);
@@ -72,33 +71,80 @@ namespace wobble.Animations
             return new Point(x, y);
         }
 
-        protected void CalculateNextXLocation(double speedMultiplier)
+        protected bool IsTouchingLeftBorder(int jumpX)
+        {
+            return (x + jumpX < 0);
+        }
+
+        protected bool IsTouchingRightBorder(int jumpX)
+        {
+            return (x + this.Width + jumpX >= frameWidth);
+        }
+
+        protected bool IsTouchingTopBorder(int jumpY)
+        {
+            return (y + jumpY < 0);
+        }
+
+        protected bool IsTouchingBottomBorder(int jumpY)
+        {
+            return (y + this.Height + jumpY >= frameHeight);
+        }
+
+        protected int CalculateXJump(double speedMultiplier = 1)
         {
             xSpeed = Utils.GetXRate(Angle);
-            int jumpX = (int)Math.Round(TopSpeed * xSpeed * speedMultiplier);
-            if (x + jumpX + this.Width >= frameWidth)
-                x = frameWidth - this.Width;
-            else if (x + jumpX < 0)
+            return (int)Math.Round(TopSpeed * xSpeed * speedMultiplier);
+        }
+
+        private void CalculateNextXLocation(double speedMultiplier)
+        {
+            int jumpX = CalculateXJump(speedMultiplier);
+
+            if (IsTouchingLeftBorder(jumpX))
                 x = 0;
+
+            else if (IsTouchingRightBorder(jumpX))
+                x = frameWidth - this.Width;
+
             else
                 x += jumpX;
         }
 
-        protected void CalculateNextYLocation(double speedMultiplier)
+        protected int CalculateYJump(double speedMultiplier = 1)
         {
             ySpeed = Utils.GetYRate(Angle);
-            int jumpY = (int)Math.Round(TopSpeed * ySpeed * speedMultiplier);
-            if (y + jumpY + this.Height >= frameHeight)
+            return (int)Math.Round(TopSpeed * ySpeed * speedMultiplier);
+        }
+
+        private void CalculateNextYLocation(double speedMultiplier)
+        {
+            int jumpY = CalculateYJump(speedMultiplier);
+
+            if (IsTouchingBottomBorder(jumpY))
                 y = frameHeight - this.Height;
-            else if (y + jumpY < 0)
+
+            else if (IsTouchingTopBorder(jumpY))
                 y = 0;
+
             else
                 y += jumpY;
         }
 
-        public Point GetLocalPoint()
+        protected void CalculateNextLocation(double speedMultiplier = 1)
+        {
+            CalculateNextXLocation(speedMultiplier);
+            CalculateNextYLocation(speedMultiplier);
+        }
+
+        public Point GetInitLocalPoint()
         {
             return new Point((int)(this.InitVector.X * frameWidth), (int)(this.InitVector.Y * frameHeight));
+        }
+
+        public Point GetCurrentLocalPoint()
+        {
+            return new Point(this.x, this.y);
         }
 
         public bool IsColliding(Sprite other)
@@ -122,7 +168,7 @@ namespace wobble.Animations
 
         public void ResetLocation()
         {
-            Point initLocationPoint = this.GetLocalPoint();
+            Point initLocationPoint = this.GetInitLocalPoint();
             this.x = initLocationPoint.X;
             this.y = initLocationPoint.Y;
             this.Angle = this.InitVector.Angle;

@@ -4,12 +4,13 @@ namespace wobble.Animations
 {
     public class Player : ControlledSprite
     {
-        private static int DashMaxTimer { get => 7; }
-        protected override int TopSpeed { get => 20; }
-        private int DashMultiplier { get => 3; }
-        private int DashTimer { set; get; }
         protected override int Width { get => 100; }
         protected override int Height { get => 100; }
+
+        protected override int TopSpeed { get => 20; }
+        private int DashMultiplier { get => 3; }
+
+        private AbilityHandler dash = new AbilityHandler(20);
 
         public Player(int frameWidth, int frameHeight, Bitmap bitmap, Vector initVector) : base(frameWidth, frameHeight, bitmap, initVector) { }
 
@@ -21,15 +22,14 @@ namespace wobble.Animations
         public override void CalculateNextPosition()
         {
             double speedMultiplier = CalculateSpeedMultiplier();
-            CalculateNextXLocation(speedMultiplier);
-            CalculateNextYLocation(speedMultiplier);
-            if (DashTimer > 0)
-                DashTimer--;
+            CalculateNextLocation(speedMultiplier);
+            if (dash.HasAbilityTimeLeft())
+                dash.ReduceTimer();
         }
 
         private double CalculateSpeedMultiplier()
         {
-            if (DashTimer > 0)
+            if (dash.HasAbilityTimeLeft())
                 return DashMultiplier;
             else
                 return CalculateJoystickMultiplier();
@@ -42,7 +42,7 @@ namespace wobble.Animations
 
         public void InitDash()
         {
-            DashTimer = DashMaxTimer;
+            dash.ResetAbilityTimer();
         }
     }
 }

@@ -9,8 +9,13 @@ namespace wobble.Animations
         public void CalculateNextControlledMovement(double angle, double distance)
         {
             UpdateAngleAndDistance(angle, distance);
-            CalculateNextSpriteAngle();
-            CalculateNextPosition();
+            CalculateNextMovement();
+        }
+
+        private void UpdateAngleAndDistance(double angle, double distance)
+        {
+            this.Angle = angle;
+            this.Distance = distance;
         }
     }
 }

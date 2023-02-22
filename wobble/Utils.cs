@@ -68,5 +68,15 @@ namespace wobble
         {
             return (angle + Math.Pi) % (2 * Math.Pi);
         }
+
+        public static double MirrorAngleHorizontally(double angle)
+        {
+            return -1 * InvertAngle(angle);
+        }
+
+        public static double MirrorAngleVertically(double angle)
+        {
+            return InvertAngle(Math.Pi - angle);
+        }
     }
 }

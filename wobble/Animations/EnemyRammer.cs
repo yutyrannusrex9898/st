@@ -8,19 +8,12 @@ namespace wobble.Animations
         protected override int Width => 90;
         protected override int Height => 90;
 
-        public EnemyRammer(int frameWidth, int frameHeight, Bitmap bitmap, Player player, Vector initVector) : base(frameWidth, frameHeight, bitmap, player, initVector) { }
-
-        public override void Draw(Canvas canvas)
-        {
-            canvas.DrawBitmap(currentBitmap, x, y, null);
-        }
+        public EnemyRammer(int frameWidth, int frameHeight, Bitmap bitmap, Sprite target, Vector initVector) : base(frameWidth, frameHeight, bitmap, target, initVector) { }
 
         public override void CalculateNextPosition()
         {
-            this.Angle = Utils.GetAngleBetweenPoints(GetLocation(), player.GetLocation());
-
-            CalculateNextXLocation(1);
-            CalculateNextYLocation(1);
+            this.Angle = Utils.GetAngleBetweenPoints(GetLocation(), target.GetLocation());
+            CalculateNextLocation();
         }
     }
 }

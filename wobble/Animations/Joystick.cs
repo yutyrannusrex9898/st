@@ -51,7 +51,7 @@ namespace wobble.Animations
 
         public Joystick(int frameWidth, int frameHeight, Vector initVector) : base(frameWidth, frameHeight, null, initVector)
         {
-            MainLocation = this.GetLocalPoint();
+            MainLocation = this.GetInitLocalPoint();
         }
 
         public override void Draw(Canvas canvas)
@@ -78,7 +78,7 @@ namespace wobble.Animations
 
         public override void CalculateNextPosition()
         {
-            Point trackingPointLocation = Utils.GetMovedPointByAngleAndDistance(this.GetLocalPoint(), Angle, Distance);
+            Point trackingPointLocation = Utils.GetMovedPointByAngleAndDistance(this.GetInitLocalPoint(), Angle, Distance);
             this.x = trackingPointLocation.X;
             this.y = trackingPointLocation.Y;
         }

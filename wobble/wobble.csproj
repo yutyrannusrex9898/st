@@ -63,10 +63,12 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animations\AbilityHandler.cs" />
     <Compile Include="Animations\ControlledSprite.cs" />
     <Compile Include="Animations\Enemy.cs" />
     <Compile Include="Animations\EnemyPistoleer.cs" />
     <Compile Include="Animations\EnemyRammer.cs" />
+    <Compile Include="Animations\PistoleerProjectile.cs" />
     <Compile Include="Animations\Player.cs" />
     <Compile Include="Animations\Sprite.cs" />
     <Compile Include="Animations\MovementView.cs" />

@@ -73,20 +73,20 @@ namespace wobble.Animations
 
                 if (isDead)
                 {
-                    if (lives > 0)
-                    {
-                        lives--;
-                        player.ResetLocation();
-                        enemyRammer.ResetLocation();
-                        enemyPistoleer.ResetLocation();
-                        System.Console.WriteLine($"Down to {lives} lives.");
-                    }
-                    else
-                    {
-                        System.Console.WriteLine("Game Over");
-                        this.angle = 0;
-                        this.distance = 0;
-                    }
+                    //if (lives > 0)
+                    //{
+                    lives--;
+                    player.ResetLocation();
+                    enemyRammer.ResetLocation();
+                    enemyPistoleer.ResetLocation();
+                    System.Console.WriteLine($"Down to {lives} lives.");
+                    //}
+                    //else
+                    //{
+                    //    System.Console.WriteLine("Game Over");
+                    //    this.angle = 0;
+                    //    this.distance = 0;
+                    //}
                 }
                 else
                 {
@@ -131,8 +131,8 @@ namespace wobble.Animations
 
         private void HandleJoystickTouch(Point fingerLocation)
         {
-            this.angle = Utils.GetAngleBetweenPoints(joystick.GetLocalPoint(), fingerLocation);
-            this.actualDistance = Utils.GetDistanceBetweenPoints(joystick.GetLocalPoint(), fingerLocation);
+            this.angle = Utils.GetAngleBetweenPoints(joystick.GetInitLocalPoint(), fingerLocation);
+            this.actualDistance = Utils.GetDistanceBetweenPoints(joystick.GetInitLocalPoint(), fingerLocation);
             this.distance = Math.Min(actualDistance, Joystick.joystickWorkingRadius);
         }
 
