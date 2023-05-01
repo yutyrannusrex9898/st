@@ -75,6 +75,7 @@ namespace wobble.Animations
                     player.ResetLocation();
                     enemyRammer.ResetLocation();
                     enemyPistoleer.ResetLocation();
+                    enemyPistoleer.projectile.ResetLocation();
                     System.Console.WriteLine($"Down to {lives} lives.");
                     //}
                     //else
