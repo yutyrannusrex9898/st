@@ -1,10 +1,10 @@
-﻿using Android.Graphics;
+﻿using Android.Content.Res;
 
 namespace wobble.Animations
 {
     public abstract class ControlledSprite : Sprite
     {
-        protected ControlledSprite(int frameWidth, int frameHeight, Bitmap bitmap, Vector InitVector) : base(frameWidth, frameHeight, bitmap, InitVector) { }
+        protected ControlledSprite(int frameWidth, int frameHeight, Resources resources, Vector InitVector) : base(frameWidth, frameHeight, resources, InitVector) { }
 
         public void CalculateNextControlledMovement(double angle, double distance)
         {

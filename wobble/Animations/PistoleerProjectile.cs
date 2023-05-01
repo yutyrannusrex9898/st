@@ -1,17 +1,21 @@
-﻿using Android.Graphics;
+﻿using Android.Content.Res;
+using Android.Graphics;
 
 namespace wobble.Animations
 {
     public class PistoleerProjectile : Enemy
     {
-        protected override int TopSpeed => 15;
+        protected override int TopSpeed => 10;
 
-        protected override int Width => 20;
+        protected override int Width => 40;
 
-        protected override int Height => 20;
+        protected override int Height => 40;
 
-
-        public PistoleerProjectile(int frameWidth, int frameHeight, Bitmap bitmap, Sprite target, Vector initVector) : base(frameWidth, frameHeight, bitmap, target, initVector) { }
+        public PistoleerProjectile(int frameWidth, int frameHeight, Resources resources, Sprite target, Vector initVector) : base(frameWidth, frameHeight, resources, target, initVector)
+        {
+            SetBitmap(BitmapFactory.DecodeResource(resources, Resource.Drawable.Projectile));
+            SetInitLocation(-1000, -1000, 0);
+        }
 
         public void SetInitLocation(int x, int y, double angle)
         {
@@ -22,7 +26,7 @@ namespace wobble.Animations
 
         public override void CalculateNextPosition()
         {
-            CalculateNextLocation();
+            CalculateNextLocation(1, false);
         }
 
         public bool IsOutsideBorder()

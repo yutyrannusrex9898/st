@@ -67,6 +67,7 @@
     <Compile Include="Animations\ControlledSprite.cs" />
     <Compile Include="Animations\Enemy.cs" />
     <Compile Include="Animations\EnemyPistoleer.cs" />
+    <Compile Include="Animations\EnemyRailgunner.cs" />
     <Compile Include="Animations\EnemyRammer.cs" />
     <Compile Include="Animations\PistoleerProjectile.cs" />
     <Compile Include="Animations\Player.cs" />
@@ -124,6 +125,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\Rammer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\Projectile.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

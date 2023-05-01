@@ -1,4 +1,5 @@
-﻿using Android.Graphics;
+﻿using Android.Content.Res;
+using Android.Graphics;
 
 namespace wobble.Animations
 {
@@ -12,7 +13,10 @@ namespace wobble.Animations
 
         private AbilityHandler dash = new AbilityHandler(20);
 
-        public Player(int frameWidth, int frameHeight, Bitmap bitmap, Vector initVector) : base(frameWidth, frameHeight, bitmap, initVector) { }
+        public Player(int frameWidth, int frameHeight, Resources resources, Vector initVector) : base(frameWidth, frameHeight, resources, initVector)
+        {
+            SetBitmap(BitmapFactory.DecodeResource(resources, Resource.Drawable.Player));
+        }
 
         public override void Draw(Canvas canvas)
         {

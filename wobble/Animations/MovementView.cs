@@ -33,14 +33,10 @@ namespace wobble.Animations
             this.frameWidth = frameWidth;
             this.frameHeight = frameHeight;
 
-            Bitmap playerBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.Player);
-            Bitmap enemyRammerBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.Rammer);
-            Bitmap enemyPistoleerBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.Pistoleer);
-
-            player = new Player(frameWidth, frameHeight, playerBitmap, Constants.LEVEL_A.initPlayerVector);
+            player = new Player(frameWidth, frameHeight, Resources, Constants.LEVEL_A.initPlayerVector);
             joystick = new Joystick(frameWidth, frameHeight, Constants.joystickVector);
-            enemyRammer = new EnemyRammer(frameWidth, frameHeight, enemyRammerBitmap, player, Constants.LEVEL_A.initRammerVector);
-            enemyPistoleer = new EnemyPistoleer(frameWidth, frameHeight, enemyPistoleerBitmap, player, Constants.LEVEL_A.initPistoleerVector);
+            enemyRammer = new EnemyRammer(frameWidth, frameHeight, Resources, player, Constants.LEVEL_A.initRammerVector);
+            enemyPistoleer = new EnemyPistoleer(frameWidth, frameHeight, Resources, player, Constants.LEVEL_A.initPistoleerVector);
 
             thread = new Thread(this);
             thread.Start();
@@ -69,7 +65,7 @@ namespace wobble.Animations
             {
                 drawSurface();
 
-                bool isDead = player.IsColliding(enemyRammer) || player.IsColliding(enemyPistoleer);
+                bool isDead = player.IsColliding(enemyRammer) || player.IsColliding(enemyPistoleer) || player.IsColliding(enemyPistoleer.projectile);
 
                 if (isDead)
                 {

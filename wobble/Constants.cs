@@ -2,7 +2,6 @@
 {
     public static class Constants
     {
-
         public static Vector joystickVector = new Vector(0.2F, 0.75F, 0);
 
         public static LevelSettings LEVEL_A = new LevelSettings()

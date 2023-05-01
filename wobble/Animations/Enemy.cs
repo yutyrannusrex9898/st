@@ -1,4 +1,5 @@
-﻿using Android.Graphics;
+﻿using Android.Content.Res;
+using Android.Graphics;
 
 namespace wobble.Animations
 {
@@ -7,7 +8,7 @@ namespace wobble.Animations
         protected readonly Sprite target;
         protected readonly bool isAlive;
 
-        public Enemy(int frameWidth, int frameHeight, Bitmap bitmap, Sprite target, Vector initVector) : base(frameWidth, frameHeight, bitmap, initVector)
+        public Enemy(int frameWidth, int frameHeight, Resources resources, Sprite target, Vector initVector) : base(frameWidth, frameHeight, resources, initVector)
         {
             this.target = target;
             this.isAlive = true;

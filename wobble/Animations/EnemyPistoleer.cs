@@ -1,6 +1,5 @@
-﻿using Android.Graphics;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Android.Content.Res;
+using Android.Graphics;
 
 namespace wobble.Animations
 {
@@ -11,19 +10,20 @@ namespace wobble.Animations
         protected override int TopSpeed => 10;
 
         private AbilityHandler shotCountdown = new AbilityHandler(150);
-        private LinkedList<PistoleerProjectile> projectiles = new LinkedList<PistoleerProjectile>();
+        public PistoleerProjectile projectile;
 
-        public EnemyPistoleer(int frameWidth, int frameHeight, Bitmap bitmap, Sprite target, Vector initVector) : base(frameWidth, frameHeight, bitmap, target, initVector)
+        public EnemyPistoleer(int frameWidth, int frameHeight, Resources resources, Sprite target, Vector initVector) : base(frameWidth, frameHeight, resources, target, initVector)
         {
+            SetBitmap(BitmapFactory.DecodeResource(resources, Resource.Drawable.Pistoleer));
             this.Angle = Utils.getRandomAngle();
+            this.projectile = new PistoleerProjectile(frameWidth, frameHeight, resources, target, this.InitVector);
         }
 
-        public void shoot()
+        public void Shoot()
         {
+            Bitmap a = BitmapFactory.DecodeResource(resources, Resource.Drawable.Projectile);
             double angle = Utils.GetAngleBetweenPoints(this.GetCurrentLocalPoint(), target.GetCurrentLocalPoint());
-            PistoleerProjectile projectile = new PistoleerProjectile(frameWidth, frameHeight, originlBitmap, target, this.InitVector);
             projectile.SetInitLocation(this.x, this.y, angle);
-            projectiles.AddLast(projectile);
         }
 
         public override void CalculateNextPosition()
@@ -45,18 +45,17 @@ namespace wobble.Animations
             HandleShooting();
         }
 
+        public void CalculateNextMovement()
+        {
+            base.CalculateNextMovement();
+            projectile.CalculateNextMovement();
+        }
+
         private void HandleShooting()
         {
             // TODO: split into 2 functions (check projectiles and check countdown).
-            HashSet<PistoleerProjectile> projectiles = this.projectiles.ToHashSet();
 
-            foreach (PistoleerProjectile projectile in projectiles)
-            {
-                if (projectile.IsOutsideBorder())
-                    this.projectiles.Remove(projectile);
-                else
-                    projectile.CalculateNextPosition();
-            }
+            projectile.CalculateNextPosition();
 
             if (shotCountdown.HasAbilityTimeLeft())
             {
@@ -64,7 +63,7 @@ namespace wobble.Animations
             }
             else
             {
-                shoot();
+                Shoot();
                 shotCountdown.ResetAbilityTimer();
             }
         }
@@ -72,10 +71,7 @@ namespace wobble.Animations
         public override void Draw(Canvas canvas)
         {
             base.Draw(canvas);
-            foreach (PistoleerProjectile projectile in this.projectiles)
-            {
-                projectile.Draw(canvas);
-            }
+            projectile.Draw(canvas);
         }
     }
 }

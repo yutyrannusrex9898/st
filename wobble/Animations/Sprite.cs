@@ -1,4 +1,5 @@
-﻿using Android.Graphics;
+﻿using Android.Content.Res;
+using Android.Graphics;
 using Java.Lang;
 
 namespace wobble.Animations
@@ -20,26 +21,31 @@ namespace wobble.Animations
 
         protected int frameWidth;
         protected int frameHeight;
+        protected Resources resources;
 
         protected double xSpeed = 0.0;
         protected double ySpeed = 0.0;
 
-        protected readonly Bitmap originlBitmap;
-        protected readonly Bitmap[] rotatedBitmaps;
+        protected Bitmap originlBitmap;
+        protected Bitmap[] rotatedBitmaps;
         protected Bitmap currentBitmap;
 
-        public Sprite(int frameWidth, int frameHeight, Bitmap bitmap, Vector initVector)
+        public Sprite(int frameWidth, int frameHeight, Resources resources, Vector initVector)
         {
             this.frameWidth = frameWidth;
             this.frameHeight = frameHeight;
+            this.resources = resources;
             this.InitVector = initVector;
             this.x = (int)(initVector.X * frameWidth);
             this.y = (int)(initVector.Y * frameHeight);
+        }
 
+        protected void SetBitmap(Bitmap bitmap)
+        {
             if (bitmap != null)
             {
-                this.originlBitmap = Bitmap.CreateScaledBitmap(bitmap, this.Width, this.Height, false);
-                this.rotatedBitmaps = Utils.CalculateBitmaps(originlBitmap, bitmapAngles, 100, 100);
+                this.originlBitmap = bitmap;
+                this.rotatedBitmaps = Utils.CalculateBitmaps(originlBitmap, bitmapAngles, this.Width, this.Height);
                 this.currentBitmap = rotatedBitmaps[0];
             }
         }
@@ -97,18 +103,20 @@ namespace wobble.Animations
             return (int)Math.Round(TopSpeed * xSpeed * speedMultiplier);
         }
 
-        private void CalculateNextXLocation(double speedMultiplier)
+        private void CalculateNextXLocation(double speedMultiplier, bool limitToFrame = true)
         {
             int jumpX = CalculateXJump(speedMultiplier);
 
-            if (IsTouchingLeftBorder(jumpX))
-                x = 0;
+            x += jumpX;
 
-            else if (IsTouchingRightBorder(jumpX))
-                x = frameWidth - this.Width;
+            if (limitToFrame)
+            {
+                if (IsTouchingLeftBorder(jumpX))
+                    x = 0;
 
-            else
-                x += jumpX;
+                else if (IsTouchingRightBorder(jumpX))
+                    x = frameWidth - this.Width;
+            }
         }
 
         protected int CalculateYJump(double speedMultiplier = 1)
@@ -117,24 +125,26 @@ namespace wobble.Animations
             return (int)Math.Round(TopSpeed * ySpeed * speedMultiplier);
         }
 
-        private void CalculateNextYLocation(double speedMultiplier)
+        private void CalculateNextYLocation(double speedMultiplier, bool limitToFrame = true)
         {
             int jumpY = CalculateYJump(speedMultiplier);
+            y += jumpY;
 
-            if (IsTouchingBottomBorder(jumpY))
-                y = frameHeight - this.Height;
+            if (limitToFrame)
+            {
 
-            else if (IsTouchingTopBorder(jumpY))
-                y = 0;
+                if (IsTouchingBottomBorder(jumpY))
+                    y = frameHeight - this.Height;
 
-            else
-                y += jumpY;
+                else if (IsTouchingTopBorder(jumpY))
+                    y = 0;
+            }
         }
 
-        protected void CalculateNextLocation(double speedMultiplier = 1)
+        protected void CalculateNextLocation(double speedMultiplier = 1, bool limitToFrame = true)
         {
-            CalculateNextXLocation(speedMultiplier);
-            CalculateNextYLocation(speedMultiplier);
+            CalculateNextXLocation(speedMultiplier, limitToFrame);
+            CalculateNextYLocation(speedMultiplier, limitToFrame);
         }
 
         public Point GetInitLocalPoint()
