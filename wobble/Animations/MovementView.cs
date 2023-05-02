@@ -52,8 +52,14 @@ namespace wobble.Animations
                     canvas.DrawColor(Color.Wheat);
                     player.Draw(canvas);
                     joystick.Draw(canvas);
-                    enemyRammer.Draw(canvas);
-                    enemyPistoleer.Draw(canvas);
+                    if (enemyRammer.isAlive)
+                    {
+                        enemyRammer.Draw(canvas);
+                    }
+                    if (enemyPistoleer.isAlive)
+                    {
+                        enemyPistoleer.Draw(canvas);
+                    }
                     Holder.UnlockCanvasAndPost(canvas);
                 }
             }
@@ -65,9 +71,21 @@ namespace wobble.Animations
             {
                 drawSurface();
 
-                bool isDead = player.IsColliding(enemyRammer) || player.IsColliding(enemyPistoleer) || player.IsColliding(enemyPistoleer.projectile);
+                bool PlayerIsDead = (player.IsColliding(enemyRammer, enemyRammer.isAlive) || player.IsColliding(enemyPistoleer, enemyPistoleer.isAlive) || player.IsColliding(enemyPistoleer.projectile, enemyPistoleer.isAlive)) && !player.dash.HasAbilityTimeLeft();
+                //System.Console.WriteLine(player.dash.HasAbilityTimeLeft());
+                bool RammerIsDead = player.dash.HasAbilityTimeLeft() && player.IsColliding(enemyRammer, enemyRammer.isAlive);
+                bool PistoleerIsDead = player.dash.HasAbilityTimeLeft() && player.IsColliding(enemyPistoleer, enemyPistoleer.isAlive);
 
-                if (isDead)
+                if (RammerIsDead)
+                {
+                    enemyRammer.isAlive = false;
+                }
+                if (PistoleerIsDead)
+                {
+                    enemyPistoleer.isAlive = false;
+                }
+
+                if (PlayerIsDead)
                 {
                     //if (lives > 0)
                     //{
@@ -76,6 +94,8 @@ namespace wobble.Animations
                     enemyRammer.ResetLocation();
                     enemyPistoleer.ResetLocation();
                     enemyPistoleer.projectile.ResetLocation();
+                    enemyRammer.isAlive = true;
+                    enemyPistoleer.isAlive = true;
                     System.Console.WriteLine($"Down to {lives} lives.");
                     //}
                     //else

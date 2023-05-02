@@ -11,7 +11,7 @@ namespace wobble.Animations
         protected override int TopSpeed { get => 20; }
         private int DashMultiplier { get => 3; }
 
-        private AbilityHandler dash = new AbilityHandler(20);
+        public AbilityHandler dash = new AbilityHandler(20);
 
         public Player(int frameWidth, int frameHeight, Resources resources, Vector initVector) : base(frameWidth, frameHeight, resources, initVector)
         {

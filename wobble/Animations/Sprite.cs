@@ -157,23 +157,28 @@ namespace wobble.Animations
             return new Point(this.x, this.y);
         }
 
-        public bool IsColliding(Sprite other)
+        public bool IsColliding(Sprite other, bool alive)
         {
-            int thisLeftX = this.x;
-            int thisRightX = this.x + this.Width;
-            int thisTopY = this.y;
-            int thisBottomY = this.y + this.Height;
+            if (alive)
+            {
+                int thisLeftX = this.x;
+                int thisRightX = this.x + this.Width;
+                int thisTopY = this.y;
+                int thisBottomY = this.y + this.Height;
 
-            int otherLeftX = other.x;
-            int otherRightX = other.x + other.Width;
-            int otherTopY = other.y;
-            int otherBottomY = other.y + other.Height;
+                int otherLeftX = other.x;
+                int otherRightX = other.x + other.Width;
+                int otherTopY = other.y;
+                int otherBottomY = other.y + other.Height;
 
 
-            bool xCollision = (otherLeftX >= thisLeftX && otherLeftX <= thisRightX) || (otherRightX >= thisLeftX && otherRightX <= thisRightX);
-            bool yCollision = (otherTopY >= thisTopY && otherTopY <= thisBottomY) || (otherBottomY >= thisTopY && otherBottomY <= thisBottomY);
+                bool xCollision = (otherLeftX >= thisLeftX && otherLeftX <= thisRightX) || (otherRightX >= thisLeftX && otherRightX <= thisRightX);
+                bool yCollision = (otherTopY >= thisTopY && otherTopY <= thisBottomY) || (otherBottomY >= thisTopY && otherBottomY <= thisBottomY);
+                return xCollision && yCollision;
+            }
 
-            return xCollision && yCollision;
+            return false;
+
         }
 
         public void ResetLocation()

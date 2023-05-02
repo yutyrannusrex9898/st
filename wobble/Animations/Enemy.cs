@@ -6,7 +6,7 @@ namespace wobble.Animations
     public abstract class Enemy : Sprite
     {
         protected readonly Sprite target;
-        protected readonly bool isAlive;
+        public bool isAlive { get; set; }
 
         public Enemy(int frameWidth, int frameHeight, Resources resources, Sprite target, Vector initVector) : base(frameWidth, frameHeight, resources, initVector)
         {
