@@ -9,7 +9,7 @@ namespace wobble.Animations
         protected override int Height => 90;
         protected override int TopSpeed => 10;
 
-        private AbilityHandler shotCountdown = new AbilityHandler(150);
+        private AbilityHandler shotAbility = new AbilityHandler(0, 150);
         public PistoleerProjectile projectile;
 
         public EnemyPistoleer(int frameWidth, int frameHeight, Resources resources, Sprite target, Vector initVector) : base(frameWidth, frameHeight, resources, target, initVector)
@@ -22,7 +22,7 @@ namespace wobble.Animations
         public void Shoot()
         {
             Bitmap a = BitmapFactory.DecodeResource(resources, Resource.Drawable.Projectile);
-            double angle = Utils.GetAngleBetweenPoints(this.GetCurrentLocalPoint(), target.GetCurrentLocalPoint());
+            double angle = Utils.GetAngleBetweenPoints(this.GetCenterPoint(), target.GetCenterPoint());
             projectile.SetInitLocation(this.x, this.y, angle);
         }
 
@@ -57,14 +57,14 @@ namespace wobble.Animations
             {
                 projectile.CalculateNextPosition();
 
-                if (shotCountdown.HasAbilityTimeLeft())
+                if (shotAbility.IsCoolingdown())
                 {
-                    shotCountdown.ReduceTimer();
+                    shotAbility.ReduceCooldownTimer();
                 }
                 else
                 {
                     Shoot();
-                    shotCountdown.ResetAbilityTimer();
+                    shotAbility.ResetCooldownTimer();
                 }
             }
         }
@@ -78,6 +78,12 @@ namespace wobble.Animations
         {
             base.Draw(canvas);
             projectile.Draw(canvas);
+        }
+
+        public new void Reset()
+        {
+            base.Reset();
+            projectile.Reset();
         }
     }
 }

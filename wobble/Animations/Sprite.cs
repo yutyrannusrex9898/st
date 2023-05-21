@@ -25,6 +25,8 @@ namespace wobble.Animations
 
         protected double xSpeed = 0.0;
         protected double ySpeed = 0.0;
+        public bool isAlive = true;
+
 
         protected Bitmap originlBitmap;
         protected Bitmap[] rotatedBitmaps;
@@ -152,9 +154,9 @@ namespace wobble.Animations
             return new Point((int)(this.InitVector.X * frameWidth), (int)(this.InitVector.Y * frameHeight));
         }
 
-        public Point GetCurrentLocalPoint()
+        public Point GetCenterPoint()
         {
-            return new Point(this.x, this.y);
+            return new Point(this.x + this.Width / 2, this.y + this.Height / 2);
         }
 
         public bool IsColliding(Sprite other)
@@ -181,7 +183,13 @@ namespace wobble.Animations
             Point initLocationPoint = this.GetInitLocalPoint();
             this.x = initLocationPoint.X;
             this.y = initLocationPoint.Y;
-            this.Angle = this.InitVector.Angle;
+            this.Angle = Utils.getRandomAngle();
+        }
+
+        public void Reset()
+        {
+            isAlive = true;
+            ResetLocation();
         }
     }
 }

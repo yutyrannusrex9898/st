@@ -9,6 +9,7 @@
             initPlayerVector = new Vector(0.5F, 0.5F, 0.0),
             initPistoleerVector = new Vector(0.75F, 0.1F, Utils.getRandomAngle()),
             initRammerVector = new Vector(0.1F, 0.1F, Utils.getRandomAngle()),
+            initRailGunnerVector = new Vector(0.1F, 0.9F, Utils.getRandomAngle()),
         };
     }
 
@@ -17,5 +18,6 @@
         public Vector initPlayerVector;
         public Vector initPistoleerVector;
         public Vector initRammerVector;
+        public Vector initRailGunnerVector;
     }
 }

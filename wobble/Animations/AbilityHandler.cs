@@ -2,27 +2,48 @@
 {
     public class AbilityHandler
     {
-        protected int AbilityMaxTimer { get; }
-        protected int AbilityTimer { get; set; }
+        protected int Duration { get; }
+        public int AbilityTimeLeft { get; set; }
 
-        public AbilityHandler(int abilityMaxTimer)
+        protected int Cooldown { get; }
+        public int CoolDownTimeLeft { get; set; }
+
+        public AbilityHandler(int duration, int cooldown)
         {
-            this.AbilityMaxTimer = abilityMaxTimer;
+            this.Duration = duration;
+            this.Cooldown = cooldown;
         }
 
-        public bool HasAbilityTimeLeft()
+        public bool IsActive()
         {
-            return this.AbilityTimer > 0;
+            return this.AbilityTimeLeft > 0;
         }
 
-        public void ReduceTimer()
+        public void ReduceAbilityTimer()
         {
-            this.AbilityTimer--;
+            this.AbilityTimeLeft--;
         }
 
         public void ResetAbilityTimer()
         {
-            this.AbilityTimer = this.AbilityMaxTimer;
+            this.AbilityTimeLeft = this.Duration;
         }
+
+        public bool IsCoolingdown()
+        {
+            return this.CoolDownTimeLeft > 0;
+        }
+
+        public void ReduceCooldownTimer()
+        {
+            this.CoolDownTimeLeft--;
+        }
+
+        public void ResetCooldownTimer()
+        {
+            this.CoolDownTimeLeft = this.Cooldown;
+        }
+
+
     }
 }
