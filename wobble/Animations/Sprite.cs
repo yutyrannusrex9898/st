@@ -178,7 +178,6 @@ namespace wobble.Animations
             }
 
             return false;
-
         }
 
         public void ResetLocation()

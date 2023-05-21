@@ -1,6 +1,5 @@
 ﻿using Android.Content.Res;
 using Android.Graphics;
-using System.Collections.Generic;
 
 namespace wobble.Animations
 {
@@ -11,7 +10,6 @@ namespace wobble.Animations
         protected override int TopSpeed => 10;
 
         private AbilityHandler shotCountdown = new AbilityHandler(150);
-        private LinkedList<PistoleerProjectile> projectiles = new LinkedList<PistoleerProjectile>();
 
         public EnemyRailgunner(int frameWidth, int frameHeight, Resources resources, Sprite target, Vector initVector) : base(frameWidth, frameHeight, resources, target, initVector)
         {
@@ -19,9 +17,9 @@ namespace wobble.Animations
             this.Angle = Utils.getRandomAngle();
         }
 
-        public void shoot()
+        public void Shoot()
         {
-
+            double angle = Utils.GetAngleBetweenPoints(this.GetCurrentLocalPoint(), target.GetCurrentLocalPoint());
         }
 
         public override void CalculateNextPosition()
@@ -45,16 +43,20 @@ namespace wobble.Animations
 
         private void HandleShooting()
         {
-
+            if (shotCountdown.HasAbilityTimeLeft())
+            {
+                shotCountdown.ReduceTimer();
+            }
+            else
+            {
+                Shoot();
+                shotCountdown.ResetAbilityTimer();
+            }
         }
 
         public override void Draw(Canvas canvas)
         {
             base.Draw(canvas);
-            foreach (PistoleerProjectile projectile in this.projectiles)
-            {
-                projectile.Draw(canvas);
-            }
         }
     }
 }
