@@ -53,19 +53,25 @@ namespace wobble.Animations
 
         private void HandleShooting()
         {
-            // TODO: split into 2 functions (check projectiles and check countdown).
-
-            projectile.CalculateNextPosition();
-
-            if (shotCountdown.HasAbilityTimeLeft())
+            if (this.isAlive)
             {
-                shotCountdown.ReduceTimer();
+                projectile.CalculateNextPosition();
+
+                if (shotCountdown.HasAbilityTimeLeft())
+                {
+                    shotCountdown.ReduceTimer();
+                }
+                else
+                {
+                    Shoot();
+                    shotCountdown.ResetAbilityTimer();
+                }
             }
-            else
-            {
-                Shoot();
-                shotCountdown.ResetAbilityTimer();
-            }
+        }
+
+        public new bool IsColliding(Sprite other)
+        {
+            return base.IsColliding(other) || this.projectile.IsColliding(other);
         }
 
         public override void Draw(Canvas canvas)

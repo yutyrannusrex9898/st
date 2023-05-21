@@ -70,21 +70,21 @@ namespace wobble.Animations
             while (true)
             {
                 drawSurface();
+                bool HasAbilityTimeLeft = player.dash.HasAbilityTimeLeft();
 
-                bool PlayerIsDead = (player.IsColliding(enemyRammer, enemyRammer.isAlive) || player.IsColliding(enemyPistoleer, enemyPistoleer.isAlive) || player.IsColliding(enemyPistoleer.projectile, enemyPistoleer.isAlive)) && !player.dash.HasAbilityTimeLeft();
-                //System.Console.WriteLine(player.dash.HasAbilityTimeLeft());
-                bool RammerIsDead = player.dash.HasAbilityTimeLeft() && player.IsColliding(enemyRammer, enemyRammer.isAlive);
-                bool PistoleerIsDead = player.dash.HasAbilityTimeLeft() && player.IsColliding(enemyPistoleer, enemyPistoleer.isAlive);
-
-                if (RammerIsDead)
+                if (enemyRammer.isAlive)
                 {
-                    enemyRammer.isAlive = false;
-                }
-                if (PistoleerIsDead)
-                {
-                    enemyPistoleer.isAlive = false;
+                    bool RammerShouldDie = enemyRammer.isAlive && HasAbilityTimeLeft && player.IsColliding(enemyRammer);
+                    enemyRammer.isAlive = !RammerShouldDie;
                 }
 
+                if (enemyPistoleer.isAlive)
+                {
+                    bool PistoleerShouldDie = enemyPistoleer.isAlive && HasAbilityTimeLeft && player.IsColliding(enemyPistoleer);
+                    enemyPistoleer.isAlive = !PistoleerShouldDie;
+                }
+
+                bool PlayerIsDead = !HasAbilityTimeLeft && (enemyRammer.IsColliding(player) || enemyPistoleer.IsColliding(player));
                 if (PlayerIsDead)
                 {
                     //if (lives > 0)
@@ -100,7 +100,7 @@ namespace wobble.Animations
                     //}
                     //else
                     //{
-                    //    System.Console.WriteLine("Game Over");
+                    //    System.Console.WriteLine("Game Over!");
                     //    this.angle = 0;
                     //    this.distance = 0;
                     //}
