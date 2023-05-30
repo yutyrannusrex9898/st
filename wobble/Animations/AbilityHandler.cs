@@ -43,7 +43,5 @@
         {
             this.CoolDownTimeLeft = this.Cooldown;
         }
-
-
     }
 }

@@ -10,33 +10,39 @@ namespace wobble.Animations
         protected override int Height => 90;
         protected override int TopSpeed => 10;
 
-        private AbilityHandler shotAbility = new AbilityHandler(300, 150);
-        private Vector Laser;
+        private AbilityHandler laserAbility = new AbilityHandler(100, 200);
+        private Laser laser;
 
         public EnemyRailgunner(int frameWidth, int frameHeight, Resources resources, Sprite target, Vector initVector) : base(frameWidth, frameHeight, resources, target, initVector)
         {
             SetBitmap(BitmapFactory.DecodeResource(resources, Resource.Drawable.RailGunner));
             this.Angle = Utils.getRandomAngle();
-            this.Laser = null;
+            laser = new Laser(frameWidth, frameHeight, resources, target, initVector);
         }
 
         public void CalculateNextMovement()
         {
             CalculateNextSpriteAngle();
             CalculateNextPosition();
+            laser.CalculateNextMovement();
+
         }
+
 
         public void CalculateNextSpriteAngle()
         {
-            double angle = Utils.GetAngleBetweenPoints(GetLocation(), target.GetLocation());
-            float degrees = (Math.Abs(Utils.RadiansToDegrees(angle)) + 90) % 360;
-            int bitmapIndex = (int)(degrees / bitmapAngleSize);
-            currentBitmap = rotatedBitmaps[bitmapIndex];
+            if (laserAbility.IsCoolingdown())
+            {
+                double angle = Utils.GetAngleBetweenPoints(GetLocation(), target.GetLocation());
+                float degrees = (Math.Abs(Utils.RadiansToDegrees(angle)) + 90) % 360;
+                int bitmapIndex = (int)(degrees / bitmapAngleSize);
+                currentBitmap = rotatedBitmaps[bitmapIndex];
+            }
         }
 
         public override void CalculateNextPosition()
         {
-            if (Laser == null)
+            if (laserAbility.IsCoolingdown())
             {
                 int jumpX = CalculateXJump();
                 if (IsTouchingLeftBorder(jumpX) || IsTouchingRightBorder(jumpX))
@@ -58,61 +64,33 @@ namespace wobble.Animations
 
         private void HandleShooting()
         {
-            if (shotAbility.IsCoolingdown())
+            if (laserAbility.IsCoolingdown())
             {
-                shotAbility.ReduceCooldownTimer();
+                laserAbility.ReduceCooldownTimer();
             }
-            else if (shotAbility.IsActive())
+            else if (laserAbility.IsActive())
             {
-                SetLaserVector();
-                shotAbility.ReduceAbilityTimer();
+                Point centerPoint = this.GetCenterPoint();
+                laser.fire(centerPoint.X, centerPoint.Y);
+                laserAbility.ReduceAbilityTimer();
             }
             else
             {
-                Laser = null;
-                shotAbility.ResetCooldownTimer();
-                shotAbility.ResetAbilityTimer();
-            }
-        }
-
-        public void SetLaserVector()
-        {
-            if (Laser == null)
-            {
-                Point center = GetCenterPoint();
-                Laser = new Vector(center.X, center.Y, Utils.GetAngleBetweenPoints(center, target.GetCenterPoint()));
+                laserAbility.ResetCooldownTimer();
+                laserAbility.ResetAbilityTimer();
             }
         }
 
         public override void Draw(Canvas canvas)
         {
-            if (shotAbility.AbilityTimeLeft > 100)
-                drawLaserPath(canvas);
-            else
-                drawActiveLaser(canvas);
-
+            laser.Draw(canvas);
             base.Draw(canvas);
         }
 
-        private void drawLaserPath(Canvas canvas)
+        public new void Reset()
         {
-            Paint paint = new Paint();
-            paint.StrokeWidth = 30;
-            paint.Color = Color.DeepSkyBlue;
-            paint.Alpha = 128;
-            paint.SetStyle(Paint.Style.Stroke);
-
-
-            Point a = target.GetCenterPoint();
-
-            if (Laser != null)
-            {
-                canvas.DrawLine(Laser.X, Laser.Y, a.X, a.Y, paint);
-            }
-        }
-
-        private void drawActiveLaser(Canvas canvas)
-        {
+            base.Reset();
+            laser.Reset();
         }
     }
 }

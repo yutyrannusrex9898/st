@@ -21,7 +21,6 @@ namespace wobble.Animations
 
         public void Shoot()
         {
-            Bitmap a = BitmapFactory.DecodeResource(resources, Resource.Drawable.Projectile);
             double angle = Utils.GetAngleBetweenPoints(this.GetCenterPoint(), target.GetCenterPoint());
             projectile.SetInitLocation(this.x, this.y, angle);
         }
@@ -45,7 +44,7 @@ namespace wobble.Animations
             HandleShooting();
         }
 
-        public void CalculateNextMovement()
+        public new void CalculateNextMovement()
         {
             base.CalculateNextMovement();
             projectile.CalculateNextMovement();
@@ -76,8 +75,8 @@ namespace wobble.Animations
 
         public override void Draw(Canvas canvas)
         {
-            base.Draw(canvas);
             projectile.Draw(canvas);
+            base.Draw(canvas);
         }
 
         public new void Reset()

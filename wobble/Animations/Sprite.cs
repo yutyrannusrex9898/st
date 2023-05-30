@@ -171,11 +171,10 @@ namespace wobble.Animations
             int otherTopY = other.y;
             int otherBottomY = other.y + other.Height;
 
-
             bool xCollision = (otherLeftX >= thisLeftX && otherLeftX <= thisRightX) || (otherRightX >= thisLeftX && otherRightX <= thisRightX);
             bool yCollision = (otherTopY >= thisTopY && otherTopY <= thisBottomY) || (otherBottomY >= thisTopY && otherBottomY <= thisBottomY);
-            return xCollision && yCollision;
 
+            return xCollision && yCollision;
         }
 
         public void ResetLocation()

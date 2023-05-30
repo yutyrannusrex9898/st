@@ -1,6 +1,8 @@
 ﻿using Android.Graphics;
 using Java.Lang;
 using Java.Util;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace wobble
 {
@@ -77,6 +79,84 @@ namespace wobble
         public static double MirrorAngleVertically(double angle)
         {
             return InvertAngle(Math.Pi - angle);
+        }
+
+        public static Point GetBorderPoint(Point origin, Point target, int frameWidth, int frameHeight)
+        {
+            LinkedList<Point> interceptingPoints = getInterceptingPoints(origin, target, frameWidth, frameHeight);
+            HashSet<Point> uniquePoints = interceptingPoints.ToHashSet();
+            Point[] pointsWithinBorders = filterOutPointsOutsideBorders(uniquePoints, frameWidth, frameHeight);
+            Point closestPointToTarget = getClosestPointToTarget(target, pointsWithinBorders);
+            return closestPointToTarget;
+        }
+
+        private static LinkedList<Point> getInterceptingPoints(Point origin, Point target, int frameWidth, int frameHeight)
+        {
+            LinkedList<Point> interceptingPoints = new LinkedList<Point>();
+
+            int deltaY = target.Y - origin.Y;
+            int deltaX = target.X - origin.X;
+
+            if (deltaX == 0)
+            {
+                interceptingPoints.AddLast(new Point(origin.X, 0));
+                interceptingPoints.AddLast(new Point(origin.X, frameHeight));
+            }
+            else if (deltaY == 0)
+            {
+                interceptingPoints.AddLast(new Point(0, origin.Y));
+                interceptingPoints.AddLast(new Point(frameWidth, origin.Y));
+            }
+            else
+            {
+                double m = deltaY / (deltaX * 1.0);
+
+                int x = origin.X;
+                int y = origin.Y;
+                double b = y - m * x;
+
+                int x1 = (int)(-b / (m * 1.0));
+                interceptingPoints.AddLast(new Point(x1, 0));
+
+                int x2 = (int)((frameHeight - b) / (m * 1.0));
+                interceptingPoints.AddLast(new Point(x2, 0));
+
+                int y1 = (int)b;
+                interceptingPoints.AddLast(new Point(0, y1));
+
+                int y2 = (int)(m * frameWidth + b);
+                interceptingPoints.AddLast(new Point(0, y2));
+            }
+
+            return interceptingPoints;
+        }
+
+        private static Point[] filterOutPointsOutsideBorders(HashSet<Point> uniquePoints, int frameWidth, int frameHeight)
+        {
+            return uniquePoints.Where(currentPoint => isWithinBorders(currentPoint, frameWidth, frameHeight)).ToArray();
+        }
+
+        private static bool isWithinBorders(Point p, int frameWidth, int frameHeight)
+        {
+            return p.X >= 0 && p.X <= frameWidth && p.Y >= 0 && p.Y <= frameHeight;
+        }
+
+        private static Point getClosestPointToTarget(Point target, Point[] pointsWithinBorders)
+        {
+            int indexOfMinimulDistance = 0;
+            double minimumDistance = int.MaxValue;
+
+            for (int i = 0; i < pointsWithinBorders.Length; i++)
+            {
+                double currentDistance = GetDistanceBetweenPoints(target, pointsWithinBorders[i]);
+                if (currentDistance < minimumDistance)
+                {
+                    minimumDistance = currentDistance;
+                    indexOfMinimulDistance = i;
+                }
+            }
+
+            return pointsWithinBorders[indexOfMinimulDistance];
         }
     }
 }

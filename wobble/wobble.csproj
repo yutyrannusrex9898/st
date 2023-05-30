@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Animations\AbilityHandler.cs" />
     <Compile Include="Animations\ControlledSprite.cs" />
+    <Compile Include="Animations\Laser.cs" />
     <Compile Include="Animations\Enemy.cs" />
     <Compile Include="Animations\EnemyPistoleer.cs" />
     <Compile Include="Animations\EnemyRailgunner.cs" />

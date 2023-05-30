@@ -71,6 +71,10 @@ namespace wobble.Animations
                 drawSurface();
                 bool hasAbilityTimeLeft = player.dashAbility.IsActive();
 
+                enemyRammer.isAlive = false;
+                enemyPistoleer.isAlive = false;
+
+
                 if (enemyRammer.isAlive)
                 {
                     bool RammerShouldDie = enemyRammer.isAlive && hasAbilityTimeLeft && player.IsColliding(enemyRammer);

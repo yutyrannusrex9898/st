@@ -4,20 +4,12 @@ namespace wobble.Animations
 {
     public class Joystick : ControlledSprite
     {
-        public static int ringRadius = 150;
-        public static int ringThickness = 30;
+        private static int ringRadius = 150;
+        private static int ringThickness = 30;
         public static int joystickWorkingRadius = ringRadius - ringThickness;
-        public static Paint ringPaint = getRingPaint();
 
-        public static int centerPointRadius = 30;
-        public static Paint centerPointPaint = getCenterPointPaint();
-
-        public static int trackingPointRadius = 25;
-        public static Paint trackingPointPaint = getTrackingPointPaint();
-
-        protected override int TopSpeed { get => 0; }
-        protected override int Width { get => 0; }
-        protected override int Height { get => 0; }
+        private static int centerPointRadius = 30;
+        private static int trackingPointRadius = 25;
 
         private static Paint getRingPaint()
         {
@@ -46,6 +38,14 @@ namespace wobble.Animations
             paint.Alpha = 128;
             return paint;
         }
+
+        protected override int TopSpeed { get => 0; }
+        protected override int Width { get => 0; }
+        protected override int Height { get => 0; }
+
+        private Paint ringPaint = getRingPaint();
+        private Paint centerPointPaint = getCenterPointPaint();
+        private Paint trackingPointPaint = getTrackingPointPaint();
 
         private Point MainLocation { get; }
 
