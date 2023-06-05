@@ -81,12 +81,32 @@ namespace wobble
             return InvertAngle(Math.Pi - angle);
         }
 
+        public static bool IsLineRectColliding(Point lineStart, Point lineEnd, Rect rect)
+        {
+            bool left = IsLineLineColliding(lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y, rect.Left, rect.Top, rect.Left, rect.Bottom);
+            bool right = IsLineLineColliding(lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y, rect.Right, rect.Top, rect.Right, rect.Bottom);
+            bool top = IsLineLineColliding(lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y, rect.Left, rect.Top, rect.Right, rect.Top);
+            bool bottom = IsLineLineColliding(lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y, rect.Left, rect.Bottom, rect.Right, rect.Bottom);
+
+            return left || right || top || bottom;
+        }
+
+        public static bool IsLineLineColliding(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4)
+        {
+            // calculate the direction of the lines
+            float uA = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+            float uB = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+
+            // if uA and uB are between 0-1, lines are colliding
+            return uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1;
+        }
+
         public static Point GetBorderPoint(Point origin, Point target, int frameWidth, int frameHeight)
         {
             LinkedList<Point> interceptingPoints = getInterceptingPoints(origin, target, frameWidth, frameHeight);
-            HashSet<Point> uniquePoints = interceptingPoints.ToHashSet();
-            Point[] pointsWithinBorders = filterOutPointsOutsideBorders(uniquePoints, frameWidth, frameHeight);
-            Point closestPointToTarget = getClosestPointToTarget(target, pointsWithinBorders);
+            Point[] pointsWithinBorders = filterOutPointsOutsideBorders(interceptingPoints, frameWidth, frameHeight);
+            Point closestPointToTarget = getPointAcrossTarget(origin, target, pointsWithinBorders);
+
             return closestPointToTarget;
         }
 
@@ -118,20 +138,20 @@ namespace wobble
                 int x1 = (int)(-b / (m * 1.0));
                 interceptingPoints.AddLast(new Point(x1, 0));
 
-                int x2 = (int)((frameHeight - b) / (m * 1.0));
-                interceptingPoints.AddLast(new Point(x2, 0));
+                int x2 = (int)(1.0 * (frameHeight - b) / (m * 1.0));
+                interceptingPoints.AddLast(new Point(x2, frameHeight));
 
                 int y1 = (int)b;
                 interceptingPoints.AddLast(new Point(0, y1));
 
-                int y2 = (int)(m * frameWidth + b);
-                interceptingPoints.AddLast(new Point(0, y2));
+                int y2 = (int)(1.0 * m * frameWidth + b);
+                interceptingPoints.AddLast(new Point(frameWidth, y2));
             }
 
             return interceptingPoints;
         }
 
-        private static Point[] filterOutPointsOutsideBorders(HashSet<Point> uniquePoints, int frameWidth, int frameHeight)
+        private static Point[] filterOutPointsOutsideBorders(LinkedList<Point> uniquePoints, int frameWidth, int frameHeight)
         {
             return uniquePoints.Where(currentPoint => isWithinBorders(currentPoint, frameWidth, frameHeight)).ToArray();
         }
@@ -141,22 +161,19 @@ namespace wobble
             return p.X >= 0 && p.X <= frameWidth && p.Y >= 0 && p.Y <= frameHeight;
         }
 
-        private static Point getClosestPointToTarget(Point target, Point[] pointsWithinBorders)
+        private static Point getPointAcrossTarget(Point origin, Point target, Point[] pointsWithinBorders)
         {
-            int indexOfMinimulDistance = 0;
-            double minimumDistance = int.MaxValue;
-
             for (int i = 0; i < pointsWithinBorders.Length; i++)
             {
-                double currentDistance = GetDistanceBetweenPoints(target, pointsWithinBorders[i]);
-                if (currentDistance < minimumDistance)
+                Point borderPoint = pointsWithinBorders[i];
+                double originToBorder = GetDistanceBetweenPoints(origin, borderPoint);
+                double targetToBorder = GetDistanceBetweenPoints(target, borderPoint);
+                if (targetToBorder < originToBorder)
                 {
-                    minimumDistance = currentDistance;
-                    indexOfMinimulDistance = i;
+                    return pointsWithinBorders[i];
                 }
             }
-
-            return pointsWithinBorders[indexOfMinimulDistance];
+            return null;
         }
     }
 }

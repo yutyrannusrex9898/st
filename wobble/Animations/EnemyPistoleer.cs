@@ -1,5 +1,6 @@
 ﻿using Android.Content.Res;
 using Android.Graphics;
+using Java.Lang;
 
 namespace wobble.Animations
 {
@@ -25,6 +26,23 @@ namespace wobble.Animations
             projectile.SetInitLocation(this.x, this.y, angle);
         }
 
+        public new void CalculateNextMovement()
+        {
+            base.CalculateNextMovement();
+            projectile.CalculateNextMovement();
+
+            CalculateNextSpriteAngle();
+            CalculateNextPosition();
+        }
+
+        public void CalculateNextSpriteAngle()
+        {
+            double angle = Utils.GetAngleBetweenPoints(this.GetCenterPoint(), target.GetCenterPoint());
+            float degrees = (Math.Abs(Utils.RadiansToDegrees(angle)) + 90) % 360;
+            int bitmapIndex = (int)(degrees / bitmapAngleSize);
+            currentBitmap = rotatedBitmaps[bitmapIndex];
+        }
+
         public override void CalculateNextPosition()
         {
             int jumpX = CalculateXJump();
@@ -44,12 +62,6 @@ namespace wobble.Animations
             HandleShooting();
         }
 
-        public new void CalculateNextMovement()
-        {
-            base.CalculateNextMovement();
-            projectile.CalculateNextMovement();
-        }
-
         private void HandleShooting()
         {
             if (this.isAlive)
@@ -58,12 +70,12 @@ namespace wobble.Animations
 
                 if (shotAbility.IsCoolingdown())
                 {
-                    shotAbility.ReduceCooldownTimer();
+                    shotAbility.ReduceAbilityTimer();
                 }
                 else
                 {
                     Shoot();
-                    shotAbility.ResetCooldownTimer();
+                    shotAbility.Reset();
                 }
             }
         }
@@ -83,6 +95,7 @@ namespace wobble.Animations
         {
             base.Reset();
             projectile.Reset();
+            shotAbility.Reset();
         }
     }
 }

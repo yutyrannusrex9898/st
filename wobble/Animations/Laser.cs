@@ -40,7 +40,10 @@ namespace wobble.Animations
 
         public new bool IsColliding(Sprite other)
         {
-            return this.isAlive && base.IsColliding(other);
+            return this.isAlive &&
+                (this.borderPoint != null) &&
+                this.shotAbility.IsActive() &&
+                Utils.IsLineRectColliding(this.GetCenterPoint(), this.borderPoint, target.GetRect());
         }
 
         public override void Draw(Canvas canvas)
@@ -59,15 +62,18 @@ namespace wobble.Animations
                 canvas.DrawLine(this.GetCenterPoint().X, this.GetCenterPoint().Y, borderPoint.X, borderPoint.Y, paint);
         }
 
-        public void fire(int initX, int initY)
+        public void UpdateLocation(int initX, int initY)
+        {
+            this.x = initX;
+            this.y = initY;
+        }
+
+        public void fire()
         {
             if (borderPoint == null)
             {
-                this.x = initX;
-                this.y = initY;
                 borderPoint = Utils.GetBorderPoint(this.GetCenterPoint(), target.GetCenterPoint(), frameWidth, frameHeight);
-                shotAbility.ResetCooldownTimer();
-                shotAbility.ResetAbilityTimer();
+                shotAbility.Reset();
             }
         }
 
@@ -77,12 +83,10 @@ namespace wobble.Animations
             {
                 if (shotAbility.IsCoolingdown())
                 {
-                    System.Console.WriteLine($"LASER - warmup");
-                    shotAbility.ReduceCooldownTimer();
+                    shotAbility.ReduceAbilityTimer();
                 }
                 else if (shotAbility.IsActive())
                 {
-                    System.Console.WriteLine($"LASER - firing");
                     shotAbility.ReduceAbilityTimer();
                 }
             }
@@ -91,7 +95,8 @@ namespace wobble.Animations
         public new void Reset()
         {
             base.Reset();
-            //projectile.Reset();
+            borderPoint = null;
+            shotAbility.Reset();
         }
     }
 }

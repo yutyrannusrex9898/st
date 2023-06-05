@@ -46,7 +46,13 @@ namespace wobble.Animations
 
         public void InitDash()
         {
-            dashAbility.ResetAbilityTimer();
+            dashAbility.Reset();
+        }
+
+        public new void Reset()
+        {
+            base.Reset();
+            dashAbility.Reset();
         }
     }
 }

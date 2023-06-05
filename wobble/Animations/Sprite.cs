@@ -64,19 +64,17 @@ namespace wobble.Animations
             }
         }
 
-        public abstract void CalculateNextPosition();
-
         public void CalculateNextMovement()
         {
             CalculateNextSpriteAngle();
             CalculateNextPosition();
         }
 
-        public Point GetLocation()
+        public abstract void CalculateNextPosition();
+
+        public Rect GetRect()
         {
-            int x = this.x + (Width / 2);
-            int y = this.y + (Height / 2);
-            return new Point(x, y);
+            return new Rect(this.x, this.y, this.x + this.Width, this.y + this.Height);
         }
 
         protected bool IsTouchingLeftBorder(int jumpX)

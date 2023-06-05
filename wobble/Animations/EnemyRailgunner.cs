@@ -25,15 +25,13 @@ namespace wobble.Animations
             CalculateNextSpriteAngle();
             CalculateNextPosition();
             laser.CalculateNextMovement();
-
         }
-
 
         public void CalculateNextSpriteAngle()
         {
             if (laserAbility.IsCoolingdown())
             {
-                double angle = Utils.GetAngleBetweenPoints(GetLocation(), target.GetLocation());
+                double angle = Utils.GetAngleBetweenPoints(this.GetCenterPoint(), target.GetCenterPoint());
                 float degrees = (Math.Abs(Utils.RadiansToDegrees(angle)) + 90) % 360;
                 int bitmapIndex = (int)(degrees / bitmapAngleSize);
                 currentBitmap = rotatedBitmaps[bitmapIndex];
@@ -66,19 +64,24 @@ namespace wobble.Animations
         {
             if (laserAbility.IsCoolingdown())
             {
-                laserAbility.ReduceCooldownTimer();
+                laserAbility.ReduceAbilityTimer();
             }
             else if (laserAbility.IsActive())
             {
                 Point centerPoint = this.GetCenterPoint();
-                laser.fire(centerPoint.X, centerPoint.Y);
+                laser.UpdateLocation(centerPoint.X, centerPoint.Y);
+                laser.fire();
                 laserAbility.ReduceAbilityTimer();
             }
             else
             {
-                laserAbility.ResetCooldownTimer();
-                laserAbility.ResetAbilityTimer();
+                laserAbility.Reset();
             }
+        }
+
+        public new bool IsColliding(Sprite other)
+        {
+            return base.IsColliding(other) || this.laser.IsColliding(other);
         }
 
         public override void Draw(Canvas canvas)
@@ -91,6 +94,7 @@ namespace wobble.Animations
         {
             base.Reset();
             laser.Reset();
+            laserAbility.Reset();
         }
     }
 }

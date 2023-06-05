@@ -16,7 +16,7 @@ namespace wobble.Animations
 
         public override void CalculateNextPosition()
         {
-            this.Angle = Utils.GetAngleBetweenPoints(GetLocation(), target.GetLocation());
+            this.Angle = Utils.GetAngleBetweenPoints(this.GetCenterPoint(), target.GetCenterPoint());
             CalculateNextLocation();
         }
     }

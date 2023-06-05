@@ -12,13 +12,36 @@ namespace wobble
     {
         private FrameLayout frame;
         MovementView movementView;
+        Button btPause;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_movement);
             frame = FindViewById<FrameLayout>(Resource.Id.flMainFrame);
+            btPause = FindViewById<Button>(Resource.Id.btPause);
             SupportActionBar?.Hide();
+
+            btPause.Click += BtPause_Click;
+            updatePauseResumeButton();
+        }
+
+        private void BtPause_Click(object sender, System.EventArgs e)
+        {
+            if (movementView != null)
+            {
+                movementView.IsRunning = !movementView.IsRunning;
+                updatePauseResumeButton();
+            }
+
+        }
+
+        private void updatePauseResumeButton()
+        {
+            if (btPause != null && movementView != null)
+            {
+                btPause.Text = (movementView.IsRunning) ? "PAUSE" : "RESUME";
+            }
         }
 
         public override void OnWindowFocusChanged(bool hasFocus)

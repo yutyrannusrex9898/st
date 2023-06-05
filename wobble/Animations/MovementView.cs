@@ -7,24 +7,22 @@ namespace wobble.Animations
 {
     internal class MovementView : SurfaceView, IRunnable
     {
-        int lives = 3;
+        private static int joystickFingerIndex = 0;
 
-        static int joystickFingerIndex = 0;
+        private readonly int frameWidth;
+        private readonly int frameHeight;
 
-        int frameWidth;
-        int frameHeight;
-
+        public bool IsRunning { get; set; }
         double angle = 0;
         double distance = 0;
         double actualDistance = 0;
 
-
+        private int lives = 10;
         private Player player;
         private Joystick joystick;
         private EnemyRammer enemyRammer;
         private EnemyPistoleer enemyPistoleer;
         private EnemyRailgunner enemyRailgunner;
-
 
         private Canvas canvas;
         private Thread thread;
@@ -34,6 +32,7 @@ namespace wobble.Animations
             this.frameWidth = frameWidth;
             this.frameHeight = frameHeight;
 
+            IsRunning = false;
             player = new Player(frameWidth, frameHeight, Resources, Constants.LEVEL_A.initPlayerVector);
             joystick = new Joystick(frameWidth, frameHeight, Constants.joystickVector);
             enemyRammer = new EnemyRammer(frameWidth, frameHeight, Resources, player, Constants.LEVEL_A.initRammerVector);
@@ -58,7 +57,6 @@ namespace wobble.Animations
                     if (enemyPistoleer.isAlive) enemyPistoleer.Draw(canvas);
                     if (enemyRailgunner.isAlive) enemyRailgunner.Draw(canvas);
 
-
                     Holder.UnlockCanvasAndPost(canvas);
                 }
             }
@@ -68,62 +66,61 @@ namespace wobble.Animations
         {
             while (true)
             {
-                drawSurface();
-                bool hasAbilityTimeLeft = player.dashAbility.IsActive();
-
-                enemyRammer.isAlive = false;
-                enemyPistoleer.isAlive = false;
-
-
-                if (enemyRammer.isAlive)
+                while (IsRunning)
                 {
-                    bool RammerShouldDie = enemyRammer.isAlive && hasAbilityTimeLeft && player.IsColliding(enemyRammer);
-                    enemyRammer.isAlive = !RammerShouldDie;
-                }
+                    drawSurface();
+                    bool hasAbilityTimeLeft = player.dashAbility.IsActive();
 
-                if (enemyPistoleer.isAlive)
-                {
-                    bool pistoleerShouldDie = enemyPistoleer.isAlive && hasAbilityTimeLeft && player.IsColliding(enemyPistoleer);
-                    enemyPistoleer.isAlive = !pistoleerShouldDie;
-                }
-
-                if (enemyRailgunner.isAlive)
-                {
-                    bool railGunnerShouldDie = enemyRailgunner.isAlive && hasAbilityTimeLeft && player.IsColliding(enemyRailgunner);
-                    enemyRailgunner.isAlive = !railGunnerShouldDie;
-                }
-
-                if (player.isAlive)
-                {
-                    bool playerIsDead = !hasAbilityTimeLeft && (enemyRammer.IsColliding(player) || enemyPistoleer.IsColliding(player) || enemyRailgunner.IsColliding(player));
-                    player.isAlive = !playerIsDead;
-
-                    if (playerIsDead)
+                    if (enemyRammer.isAlive)
                     {
-                        //if (lives > 0)
-                        //{
-                        lives--;
-                        player.Reset();
-                        enemyRammer.Reset();
-                        enemyPistoleer.Reset();
-                        enemyRailgunner.Reset();
-
-                        System.Console.WriteLine($"Down to {lives} lives.");
-                        //}
-                        //else
-                        //{
-                        //    System.Console.WriteLine("Game Over!");
-                        //    this.angle = 0;
-                        //    this.distance = 0;
-                        //}
+                        bool RammerShouldDie = enemyRammer.isAlive && hasAbilityTimeLeft && player.IsColliding(enemyRammer);
+                        enemyRammer.isAlive = !RammerShouldDie;
                     }
-                    else
+
+                    if (enemyPistoleer.isAlive)
                     {
-                        player.CalculateNextControlledMovement(this.angle, this.distance);
-                        joystick.CalculateNextControlledMovement(this.angle, this.distance);
-                        enemyRammer.CalculateNextMovement();
-                        enemyPistoleer.CalculateNextMovement();
-                        enemyRailgunner.CalculateNextMovement();
+                        bool pistoleerShouldDie = enemyPistoleer.isAlive && hasAbilityTimeLeft && player.IsColliding(enemyPistoleer);
+                        enemyPistoleer.isAlive = !pistoleerShouldDie;
+                    }
+
+                    if (enemyRailgunner.isAlive)
+                    {
+                        bool railGunnerShouldDie = enemyRailgunner.isAlive && hasAbilityTimeLeft && player.IsColliding(enemyRailgunner);
+                        enemyRailgunner.isAlive = !railGunnerShouldDie;
+                    }
+
+                    if (player.isAlive)
+                    {
+                        bool playerWasHit = !hasAbilityTimeLeft && (enemyRammer.IsColliding(player) || enemyPistoleer.IsColliding(player) || enemyRailgunner.IsColliding(player));
+                        player.isAlive = !playerWasHit;
+
+                        if (playerWasHit)
+                        {
+                            if (lives > -1000)
+                            {
+                                lives--;
+                                System.Console.WriteLine($"Down to {lives} lives.");
+
+                                player.Reset();
+                                enemyRammer.Reset();
+                                enemyPistoleer.Reset();
+                                enemyRailgunner.Reset();
+                            }
+                            else
+                            {
+                                System.Console.WriteLine("Game Over!");
+                                this.angle = 0;
+                                this.distance = 0;
+                            }
+                        }
+                        else
+                        {
+                            player.CalculateNextControlledMovement(this.angle, this.distance);
+                            joystick.CalculateNextControlledMovement(this.angle, this.distance);
+                            enemyRammer.CalculateNextMovement();
+                            enemyPistoleer.CalculateNextMovement();
+                            enemyRailgunner.CalculateNextMovement();
+                        }
                     }
                 }
             }
@@ -132,7 +129,6 @@ namespace wobble.Animations
         public override bool OnTouchEvent(MotionEvent args)
         {
             int fingerIndex = args.ActionIndex;
-            Point fingerLocation = new Point((int)args.GetX(fingerIndex), (int)args.GetY(fingerIndex));
             MotionEventActions action = args.ActionMasked;
 
             switch (action)
@@ -140,6 +136,7 @@ namespace wobble.Animations
                 case MotionEventActions.Move:
                     if (fingerIndex == joystickFingerIndex)
                     {
+                        Point fingerLocation = new Point((int)args.GetX(fingerIndex), (int)args.GetY(fingerIndex));
                         HandleJoystickTouch(fingerLocation);
                     }
                     break;
@@ -152,7 +149,7 @@ namespace wobble.Animations
                     break;
 
                 case MotionEventActions.Pointer1Down:
-                    HandleDashTouch(fingerLocation);
+                    HandleDashTouch();
                     break;
             }
 
@@ -167,10 +164,9 @@ namespace wobble.Animations
             this.distance = Math.Min(actualDistance, Joystick.joystickWorkingRadius);
         }
 
-        private void HandleDashTouch(Point fingerLocation)
+        private void HandleDashTouch()
         {
             this.player.InitDash();
-            System.Console.WriteLine($"pew pew pew!!! ({fingerLocation.X},{fingerLocation.Y})");
         }
     }
 }
