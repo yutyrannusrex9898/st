@@ -8,7 +8,7 @@ namespace wobble.Animations
     {
         protected override int Width => 90;
         protected override int Height => 90;
-        protected override int TopSpeed => 10;
+        protected override int TopSpeed => 8;
 
         private AbilityHandler shotAbility = new AbilityHandler(0, 150);
         public PistoleerProjectile projectile;

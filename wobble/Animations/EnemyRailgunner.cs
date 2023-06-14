@@ -8,7 +8,7 @@ namespace wobble.Animations
     {
         protected override int Width => 90;
         protected override int Height => 90;
-        protected override int TopSpeed => 10;
+        protected override int TopSpeed => 6;
 
         private AbilityHandler laserAbility = new AbilityHandler(100, 200);
         private Laser laser;

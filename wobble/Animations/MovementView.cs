@@ -27,12 +27,15 @@ namespace wobble.Animations
         private Canvas canvas;
         private Thread thread;
 
+        private Bitmap bg;
+
         public MovementView(Context context, int frameWidth, int frameHeight) : base(context)
         {
+            this.bg = BitmapFactory.DecodeResource(Resources, Resource.Drawable.BG2);
             this.frameWidth = frameWidth;
             this.frameHeight = frameHeight;
 
-            IsRunning = false;
+            IsRunning = true;
             player = new Player(frameWidth, frameHeight, Resources, Constants.LEVEL_A.initPlayerVector);
             joystick = new Joystick(frameWidth, frameHeight, Constants.joystickVector);
             enemyRammer = new EnemyRammer(frameWidth, frameHeight, Resources, player, Constants.LEVEL_A.initRammerVector);
@@ -40,7 +43,6 @@ namespace wobble.Animations
             enemyRailgunner = new EnemyRailgunner(frameWidth, frameHeight, Resources, player, Constants.LEVEL_A.initRailGunnerVector);
 
             thread = new Thread(this);
-            thread.Start();
         }
 
         private void drawSurface()
@@ -50,7 +52,7 @@ namespace wobble.Animations
                 canvas = Holder.LockCanvas();
                 if (canvas != null)
                 {
-                    canvas.DrawColor(Color.Wheat);
+                    canvas.DrawBitmap(bg, 0, 0, null);
                     player.Draw(canvas);
                     joystick.Draw(canvas);
                     if (enemyRammer.isAlive) enemyRammer.Draw(canvas);
@@ -62,6 +64,11 @@ namespace wobble.Animations
             }
         }
 
+        public void Start()
+        {
+            this.thread.Start();
+        }
+
         public void Run()
         {
             while (true)
@@ -69,7 +76,7 @@ namespace wobble.Animations
                 while (IsRunning)
                 {
                     drawSurface();
-                    bool hasAbilityTimeLeft = player.dashAbility.IsActive();
+                    bool hasAbilityTimeLeft = player.IsDashing();
 
                     if (enemyRammer.isAlive)
                     {

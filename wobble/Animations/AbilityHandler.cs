@@ -22,9 +22,15 @@
             return this.TimeLeft > this.ActiveTime && this.TimeLeft <= this.getTotalTime();
         }
 
+        public bool IsResetable()
+        {
+            return this.TimeLeft == 0;
+        }
+
         public void ReduceAbilityTimer()
         {
-            this.TimeLeft--;
+            if (this.TimeLeft != 0)
+                this.TimeLeft--;
         }
 
         public void Reset()

@@ -11,7 +11,8 @@ namespace wobble.Animations
         protected override int TopSpeed { get => 20; }
         private int DashMultiplier { get => 3; }
 
-        public AbilityHandler dashAbility = new AbilityHandler(15, 0);
+        public AbilityHandler dashAbility = new AbilityHandler(15, 50);
+        private bool dashActivated = false;
 
         public Player(int frameWidth, int frameHeight, Resources resources, Vector initVector) : base(frameWidth, frameHeight, resources, initVector)
         {
@@ -27,13 +28,20 @@ namespace wobble.Animations
         {
             double speedMultiplier = CalculateSpeedMultiplier();
             CalculateNextLocation(speedMultiplier);
-            if (dashAbility.IsActive())
+
+            if (dashAbility.IsCoolingdown() || dashActivated)
                 dashAbility.ReduceAbilityTimer();
+
+            if (dashAbility.IsResetable())
+            {
+                dashAbility.Reset();
+                dashActivated = false;
+            }
         }
 
         private double CalculateSpeedMultiplier()
         {
-            if (dashAbility.IsActive())
+            if (IsDashing())
                 return DashMultiplier;
             else
                 return CalculateJoystickMultiplier();
@@ -46,13 +54,18 @@ namespace wobble.Animations
 
         public void InitDash()
         {
-            dashAbility.Reset();
+            if (dashAbility.IsActive())
+                dashActivated = true;
+        }
+
+        public bool IsDashing()
+        {
+            return dashActivated;
         }
 
         public new void Reset()
         {
             base.Reset();
-            dashAbility.Reset();
         }
     }
 }

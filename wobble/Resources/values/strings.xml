@@ -1,4 +1,8 @@
 <resources>
-    <string name="app_name">wobble</string>
-    <string name="action_settings">Settings</string>
+  <string name="app_name">wobble</string>
+  <string name="action_settings">Settings</string>
+  <string name="Start">Start</string>
+  <string name="Quit">Quit</string>
+  <string name="Resume">Resume</string>
+  <string name="Pause">Pause</string>
 </resources>

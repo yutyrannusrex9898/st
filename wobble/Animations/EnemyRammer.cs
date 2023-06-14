@@ -5,7 +5,7 @@ namespace wobble.Animations
 {
     public class EnemyRammer : Enemy
     {
-        protected override int TopSpeed => 10;
+        protected override int TopSpeed => 8;
         protected override int Width => 90;
         protected override int Height => 90;
 

@@ -1,29 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/flMainFrame"
+    android:background="@drawable/bg1"
     >
 
-    <FrameLayout
+    <Button
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:visibility="invisible"
+        android:text="@string/Pause"
+        android:textSize="75px"
+        android:alpha="@dimen/hint_pressed_alpha_material_light"
+        android:id="@+id/btPauseResume" />
+
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/flMainFrame"
+        android:orientation="vertical"
         android:minWidth="25px"
         android:minHeight="25px"
 		>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20px"
+            android:layout_margin="60px"
+            android:text="@string/Start"
+            android:textSize="200px"
+            android:id="@+id/btStart" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="60px"
             android:layout_marginTop="20px"
-            android:text="Start"
-            android:id="@+id/btPause" />
-    </FrameLayout>
-
-
-</LinearLayout>
+            android:text="@string/Quit"
+            android:textSize="200px"
+            android:id="@+id/btQuit" />
+    </TableLayout>
+</FrameLayout>
