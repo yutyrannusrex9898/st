@@ -10,60 +10,72 @@
     android:background="@drawable/bg1"
     >
 
-    <Button
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:visibility="invisible"
-        android:text="@string/Pause"
-        android:textSize="75px"
-        android:id="@+id/btPauseResume"
-        android:backgroundTint="@android:color/transparent"
+  <Button
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:visibility="invisible"
+      android:text="@string/Pause"
+      android:textSize="75px"
+      android:id="@+id/btPauseResume"
+      android:backgroundTint="@android:color/transparent"
         />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Quit"
-        android:id="@+id/btPauseQuit" 
-        android:layout_marginTop="120px"
-        android:visibility="invisible"
-        android:backgroundTint="@android:color/transparent"
+  <Button
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/Quit"
+      android:id="@+id/btPauseQuit"
+      android:layout_marginTop="120px"
+      android:visibility="invisible"
+      android:backgroundTint="@android:color/transparent"
+        />
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="75px"
+      android:textColor="@android:color/white"
+      android:layout_marginLeft="775px"
+      android:layout_marginTop="75px"
+      android:visibility="invisible"
+      android:text="00:00:00"
+      android:id="@+id/tvTimer"
         />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="75px"
-        android:textColor="@android:color/white"
-        android:layout_marginLeft="900px"
-        android:visibility="invisible"
-        android:id="@+id/tvDeaths"
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="75px"
+      android:textColor="@android:color/white"
+      android:layout_marginLeft="900px"
+      android:visibility="invisible"
+      android:id="@+id/tvDeaths"
         />
-    
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:minWidth="25px"
-        android:minHeight="25px"
+
+
+  <TableLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:minWidth="25px"
+      android:minHeight="25px"
 		>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="60px"
-            android:text="@string/Start"
-            android:textSize="200px"
-            android:backgroundTint="@android:color/black"
-            android:id="@+id/btStart" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="60px"
+        android:text="@string/Start"
+        android:textSize="200px"
+        android:backgroundTint="@android:color/black"
+        android:id="@+id/btStart" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="60px"
-            android:layout_marginTop="20px"
-            android:text="@string/Quit"
-            android:textSize="200px"
-            android:backgroundTint="@android:color/black"
-            android:id="@+id/btQuit" />
-    </TableLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="60px"
+        android:layout_marginTop="20px"
+        android:text="@string/Quit"
+        android:textSize="200px"
+        android:backgroundTint="@android:color/black"
+        android:id="@+id/btQuit" />
+  </TableLayout>
 </FrameLayout>

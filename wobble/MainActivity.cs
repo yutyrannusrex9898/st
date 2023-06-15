@@ -5,6 +5,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using AndroidX.AppCompat.App;
+using System.Timers;
 using wobble.Animations;
 
 
@@ -20,11 +21,15 @@ namespace wobble
         Button btPauseResume;
         Button btPauseQuit;
         public TextView tvDeaths;
-        private bool isRunning;
+        public TextView tvTimer;
+        private bool isThreadRunning;
         private const string PreferenceKey = "CurrentDeaths";
         private ISharedPreferences sharedPreferences;
         private int savedValue;
         public static int currentDeaths;
+        private System.Timers.Timer timer;
+        private int secondsRemaining = 1800;
+
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -36,9 +41,10 @@ namespace wobble
             btPauseResume = FindViewById<Button>(Resource.Id.btPauseResume);
             btPauseQuit = FindViewById<Button>(Resource.Id.btPauseQuit);
             tvDeaths = FindViewById<TextView>(Resource.Id.tvDeaths);
+            tvTimer = FindViewById<TextView>(Resource.Id.tvTimer);
 
             SupportActionBar?.Hide();
-            isRunning = true;
+            isThreadRunning = true;
 
             btStart.Click += BtStart_Click;
             btQuit.Click += BtQuit_Click;
@@ -59,16 +65,70 @@ namespace wobble
         private void BtStart_Click(object sender, System.EventArgs e)
         {
             System.Console.WriteLine("Start!");
+            if (timer != null)
+            {
+                timer.Stop();
+                timer.Dispose();
+            }
+
+            // Create a new timer
+            timer = new System.Timers.Timer();
+            timer.Interval = 1000; // Timer interval in milliseconds
+            timer.Elapsed += Timer_Elapsed;
+
+            // Start the timer
+            timer.Start();
+
+            // Update the UI immediately
+            UpdateTimerText();
+
             System.Threading.Thread thread = new System.Threading.Thread(BackgroundThreadCode);
             thread.Start();
             btPauseResume.Visibility = ViewStates.Visible;
             tvDeaths.Visibility = ViewStates.Visible;
+            tvTimer.Visibility = ViewStates.Visible;
             frame.RemoveAllViews();
             frame.AddView(btPauseResume);
             frame.AddView(movementView);
             frame.AddView(tvDeaths);
             frame.AddView(btPauseQuit);
+            frame.AddView(tvTimer);
             movementView.Start();
+        }
+
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            secondsRemaining--;
+
+            if (secondsRemaining <= 1)
+            {
+                // Timer has finished
+                timer.Stop();
+                timer.Dispose();
+
+                RunOnUiThread(() =>
+                {
+                    // Notify the user or perform any other actions
+                    Toast.MakeText(this, "You've been playing for too long!", ToastLength.Long).Show();
+                });
+            }
+            else
+            {
+                RunOnUiThread(() =>
+                {
+                    // Update the UI
+                    UpdateTimerText();
+                });
+            }
+        }
+
+        private void UpdateTimerText()
+        {
+            int hours = secondsRemaining / 3600;
+            int minutes = (secondsRemaining % 3600) / 60;
+            int seconds = secondsRemaining % 60;
+
+            tvTimer.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
         }
 
         private void BtQuit_Click(object sender, System.EventArgs e)
@@ -116,7 +176,7 @@ namespace wobble
 
         void BackgroundThreadCode()
         {
-            while (isRunning)
+            while (isThreadRunning)
             {
                 RunOnUiThread(() =>
                 {
