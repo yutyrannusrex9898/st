@@ -28,12 +28,14 @@ namespace wobble.Animations
         private Thread thread;
 
         private Bitmap bg;
+        private int deaths;
 
         public MovementView(Context context, int frameWidth, int frameHeight) : base(context)
         {
             this.bg = BitmapFactory.DecodeResource(Resources, Resource.Drawable.BG2);
             this.frameWidth = frameWidth;
             this.frameHeight = frameHeight;
+            this.deaths = MainActivity.currentDeaths;
 
             IsRunning = true;
             player = new Player(frameWidth, frameHeight, Resources, Constants.LEVEL_A.initPlayerVector);
@@ -75,6 +77,7 @@ namespace wobble.Animations
             {
                 while (IsRunning)
                 {
+
                     drawSurface();
                     bool hasAbilityTimeLeft = player.IsDashing();
 
@@ -112,6 +115,7 @@ namespace wobble.Animations
                                 enemyRammer.Reset();
                                 enemyPistoleer.Reset();
                                 enemyRailgunner.Reset();
+                                deaths++;
                             }
                             else
                             {
@@ -174,6 +178,11 @@ namespace wobble.Animations
         private void HandleDashTouch()
         {
             this.player.InitDash();
+        }
+
+        public int getDeaths()
+        {
+            return deaths;
         }
     }
 }
