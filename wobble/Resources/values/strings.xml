@@ -6,5 +6,5 @@
   <string name="Resume">Resume</string>
   <string name="Pause">Pause</string>
   <string name="Deaths">0</string>
-  
+  <string name="SaveAndQuit">Save and Quit</string>
 </resources>

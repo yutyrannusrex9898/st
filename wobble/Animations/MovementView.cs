@@ -17,7 +17,6 @@ namespace wobble.Animations
         double distance = 0;
         double actualDistance = 0;
 
-        private int lives = 10;
         private Player player;
         private Joystick joystick;
         private EnemyRammer enemyRammer;
@@ -29,20 +28,25 @@ namespace wobble.Animations
 
         private Bitmap bg;
         private int deaths;
+        private int kills;
+        Enemy[] enemies;
 
         public MovementView(Context context, int frameWidth, int frameHeight) : base(context)
         {
             this.bg = BitmapFactory.DecodeResource(Resources, Resource.Drawable.BG2);
             this.frameWidth = frameWidth;
             this.frameHeight = frameHeight;
-            this.deaths = MainActivity.currentDeaths;
 
             IsRunning = true;
+
             player = new Player(frameWidth, frameHeight, Resources, Constants.LEVEL_A.initPlayerVector);
             joystick = new Joystick(frameWidth, frameHeight, Constants.joystickVector);
+
             enemyRammer = new EnemyRammer(frameWidth, frameHeight, Resources, player, Constants.LEVEL_A.initRammerVector);
             enemyPistoleer = new EnemyPistoleer(frameWidth, frameHeight, Resources, player, Constants.LEVEL_A.initPistoleerVector);
             enemyRailgunner = new EnemyRailgunner(frameWidth, frameHeight, Resources, player, Constants.LEVEL_A.initRailGunnerVector);
+            Enemy[] enemies = { enemyRammer, enemyRailgunner, enemyPistoleer };
+            this.enemies = enemies;
 
             thread = new Thread(this);
         }
@@ -66,8 +70,10 @@ namespace wobble.Animations
             }
         }
 
-        public void Start()
+        public void Start(int kills, int deaths)
         {
+            this.kills = kills;
+            this.deaths = deaths;
             this.thread.Start();
         }
 
@@ -81,23 +87,7 @@ namespace wobble.Animations
                     drawSurface();
                     bool hasAbilityTimeLeft = player.IsDashing();
 
-                    if (enemyRammer.isAlive)
-                    {
-                        bool RammerShouldDie = enemyRammer.isAlive && hasAbilityTimeLeft && player.IsColliding(enemyRammer);
-                        enemyRammer.isAlive = !RammerShouldDie;
-                    }
-
-                    if (enemyPistoleer.isAlive)
-                    {
-                        bool pistoleerShouldDie = enemyPistoleer.isAlive && hasAbilityTimeLeft && player.IsColliding(enemyPistoleer);
-                        enemyPistoleer.isAlive = !pistoleerShouldDie;
-                    }
-
-                    if (enemyRailgunner.isAlive)
-                    {
-                        bool railGunnerShouldDie = enemyRailgunner.isAlive && hasAbilityTimeLeft && player.IsColliding(enemyRailgunner);
-                        enemyRailgunner.isAlive = !railGunnerShouldDie;
-                    }
+                    handleEnemies(hasAbilityTimeLeft);
 
                     if (player.isAlive)
                     {
@@ -106,23 +96,11 @@ namespace wobble.Animations
 
                         if (playerWasHit)
                         {
-                            if (lives > -1000)
-                            {
-                                lives--;
-                                System.Console.WriteLine($"Down to {lives} lives.");
-
-                                player.Reset();
-                                enemyRammer.Reset();
-                                enemyPistoleer.Reset();
-                                enemyRailgunner.Reset();
-                                deaths++;
-                            }
-                            else
-                            {
-                                System.Console.WriteLine("Game Over!");
-                                this.angle = 0;
-                                this.distance = 0;
-                            }
+                            player.Reset();
+                            enemyRammer.Reset();
+                            enemyPistoleer.Reset();
+                            enemyRailgunner.Reset();
+                            deaths++;
                         }
                         else
                         {
@@ -132,6 +110,22 @@ namespace wobble.Animations
                             enemyPistoleer.CalculateNextMovement();
                             enemyRailgunner.CalculateNextMovement();
                         }
+                    }
+                }
+            }
+        }
+
+        private void handleEnemies(bool hasAbilityTimeLeft)
+        {
+            foreach (Enemy enemy in enemies)
+            {
+                if (enemy.isAlive)
+                {
+                    bool shouldDie = enemy.isAlive && hasAbilityTimeLeft && player.IsColliding(enemy);
+                    if (shouldDie)
+                    {
+                        enemy.isAlive = false;
+                        kills++;
                     }
                 }
             }
@@ -180,9 +174,14 @@ namespace wobble.Animations
             this.player.InitDash();
         }
 
-        public int getDeaths()
+        public int GetDeaths()
         {
             return deaths;
+        }
+
+        public int GetKills()
+        {
+            return kills;
         }
     }
 }

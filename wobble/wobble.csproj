@@ -75,6 +75,7 @@
     <Compile Include="Animations\Sprite.cs" />
     <Compile Include="Animations\MovementView.cs" />
     <Compile Include="Animations\Joystick.cs" />
+    <Compile Include="UserData.cs" />
     <Compile Include="Vector.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
@@ -111,9 +112,12 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_launcher_round.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.2.0.5" />
-    <PackageReference Include="Xamarin.Google.Android.Material" Version="1.0.0.1" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+    <PackageReference Include="sqlite-net-pcl">
+      <Version>1.8.116</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.6.1.2" />
+    <PackageReference Include="Xamarin.Google.Android.Material" Version="1.9.0.1" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.6" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\activity_movement.xml" />

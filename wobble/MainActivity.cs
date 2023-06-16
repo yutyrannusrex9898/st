@@ -1,13 +1,13 @@
 ﻿using Android.App;
-using Android.Content;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using AndroidX.AppCompat.App;
+using SQLite;
+using System.IO;
 using System.Timers;
 using wobble.Animations;
-
 
 namespace wobble
 {
@@ -21,15 +21,17 @@ namespace wobble
         Button btPauseResume;
         Button btPauseQuit;
         public TextView tvDeaths;
+        public TextView tvKills;
         public TextView tvTimer;
         private bool isThreadRunning;
-        private const string PreferenceKey = "CurrentDeaths";
-        private ISharedPreferences sharedPreferences;
-        private int savedValue;
-        public static int currentDeaths;
-        private System.Timers.Timer timer;
+
+        private int kills;
+        private int deaths;
+
+        private Timer timer;
         private int secondsRemaining = 1800;
 
+        private SQLiteConnection dbCon;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -40,27 +42,59 @@ namespace wobble
             btQuit = FindViewById<Button>(Resource.Id.btQuit);
             btPauseResume = FindViewById<Button>(Resource.Id.btPauseResume);
             btPauseQuit = FindViewById<Button>(Resource.Id.btPauseQuit);
+            tvKills = FindViewById<TextView>(Resource.Id.tvKills);
             tvDeaths = FindViewById<TextView>(Resource.Id.tvDeaths);
             tvTimer = FindViewById<TextView>(Resource.Id.tvTimer);
 
             SupportActionBar?.Hide();
             isThreadRunning = true;
 
+            SetupButtons();
+            SetupDBConnection();
+            LoadUserDataFromDb();
+        }
+
+        private void SetupButtons()
+        {
             btStart.Click += BtStart_Click;
             btQuit.Click += BtQuit_Click;
             btPauseResume.Click += BtPauseResume_Click;
             btPauseQuit.Click += BtPauseQuit_Click;
-
-            sharedPreferences = GetSharedPreferences("MyPreferences", FileCreationMode.Private);
-            LoadSavedValue();
-            currentDeaths = int.Parse(tvDeaths.Text);
         }
 
-        private void LoadSavedValue()
+        private void SetupDBConnection()
         {
-            savedValue = sharedPreferences.GetInt(PreferenceKey, 0);
-            tvDeaths.Text = savedValue.ToString();
+            this.dbCon = new SQLiteConnection(GetDbPath());
+            this.dbCon.CreateTable<UserData>();
         }
+
+        private string GetDbPath()
+        {
+            return Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "wobble.DB");
+        }
+
+        private void LoadUserDataFromDb()
+        {
+            UserData userData = getUserData();
+            this.kills = userData.Kills;
+            this.deaths = userData.Deaths;
+        }
+
+        private UserData getUserData()
+        {
+            string deviceId = GetDeviceId();
+
+            UserData userData;
+            try { userData = this.dbCon.Get<UserData>(deviceId); }
+            catch { userData = new UserData(); }
+            return userData;
+        }
+
+        private string GetDeviceId()
+        {
+            return Android.Provider.Settings.Secure.GetString(Application.Context.ContentResolver, Android.Provider.Settings.Secure.AndroidId);
+        }
+
 
         private void BtStart_Click(object sender, System.EventArgs e)
         {
@@ -72,7 +106,7 @@ namespace wobble
             }
 
             // Create a new timer
-            timer = new System.Timers.Timer();
+            timer = new Timer();
             timer.Interval = 1000; // Timer interval in milliseconds
             timer.Elapsed += Timer_Elapsed;
 
@@ -85,15 +119,17 @@ namespace wobble
             System.Threading.Thread thread = new System.Threading.Thread(BackgroundThreadCode);
             thread.Start();
             btPauseResume.Visibility = ViewStates.Visible;
+            tvKills.Visibility = ViewStates.Visible;
             tvDeaths.Visibility = ViewStates.Visible;
             tvTimer.Visibility = ViewStates.Visible;
             frame.RemoveAllViews();
             frame.AddView(btPauseResume);
             frame.AddView(movementView);
+            frame.AddView(tvKills);
             frame.AddView(tvDeaths);
             frame.AddView(btPauseQuit);
             frame.AddView(tvTimer);
-            movementView.Start();
+            movementView.Start(this.kills, this.deaths);
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -102,13 +138,11 @@ namespace wobble
 
             if (secondsRemaining <= 1)
             {
-                // Timer has finished
                 timer.Stop();
                 timer.Dispose();
 
                 RunOnUiThread(() =>
                 {
-                    // Notify the user or perform any other actions
                     Toast.MakeText(this, "You've been playing for too long!", ToastLength.Long).Show();
                 });
             }
@@ -116,7 +150,6 @@ namespace wobble
             {
                 RunOnUiThread(() =>
                 {
-                    // Update the UI
                     UpdateTimerText();
                 });
             }
@@ -152,17 +185,21 @@ namespace wobble
 
         private void BtPauseQuit_Click(object sender, System.EventArgs e)
         {
-            int valueToSave = movementView.getDeaths();
-
-            // Save the value using SharedPreferences.Editor
-            ISharedPreferencesEditor editor = sharedPreferences.Edit();
-            editor.PutInt(PreferenceKey, valueToSave);
-            editor.Apply();
-
-            savedValue = valueToSave;
-            tvDeaths.Text = savedValue.ToString();
-            System.Console.WriteLine(savedValue);
+            this.deaths = movementView.GetDeaths();
+            this.kills = movementView.GetKills();
+            SaveUserDataToDb();
             System.Environment.Exit(0);
+        }
+
+        private void SaveUserDataToDb()
+        {
+            UserData ud = new UserData()
+            {
+                DeviceId = GetDeviceId(),
+                Kills = this.kills,
+                Deaths = this.deaths
+            };
+            dbCon.InsertOrReplace(ud);
         }
 
         public override void OnWindowFocusChanged(bool hasFocus)
@@ -180,11 +217,12 @@ namespace wobble
             {
                 RunOnUiThread(() =>
                 {
-                    currentDeaths = movementView.getDeaths();
-                    tvDeaths.Text = $"{currentDeaths}";
+                    this.kills = movementView.GetKills();
+                    this.deaths = movementView.GetDeaths();
+                    tvKills.Text = $"Kills: {kills}";
+                    tvDeaths.Text = $"Deaths: {deaths}";
                 });
             }
-
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
